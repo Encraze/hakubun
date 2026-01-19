@@ -88,7 +88,7 @@ function HomeHeader() {
       <FirstRow>
         <UserInfoContainer>
           <SvgIcon icon={<LogoIcon />} width="2em" height="2em" />
-          <AppName data-testid="home-heading">Hakubun</AppName>
+          <AppName data-testid="home-heading">WaniQult</AppName>
         </UserInfoContainer>
         <RefreshAndSettingsContainer>
           <RefreshHomeButton />

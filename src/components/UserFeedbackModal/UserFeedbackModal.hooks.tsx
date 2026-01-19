@@ -97,7 +97,7 @@ export const useUserFeedbackSubmit = (onSubmitSuccess: () => void) => {
           displayToast({
             toastType: "error",
             title: "Oh no, an API Error!",
-            content: `There was an issue submitting your ${bodyDetails.term} to the Hakubun project (oh, the irony).\nResponded with status code: ${response.status}. Maybe try again later?`,
+            content: `There was an issue submitting your ${bodyDetails.term} to the WaniQult project (oh, the irony).\nResponded with status code: ${response.status}. Maybe try again later?`,
             timeout: 10000,
           });
         } else {

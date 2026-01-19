@@ -2,7 +2,7 @@ import { CapacitorConfig } from "@capacitor/cli";
 
 const baseConfig: CapacitorConfig = {
   appId: "io.hakubun.app",
-  appName: "Hakubun",
+  appName: "WaniQult",
   webDir: "dist",
   ios: {
     contentInset: "always",

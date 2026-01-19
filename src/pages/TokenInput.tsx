@@ -168,7 +168,7 @@ const accordionItems: AccordionItemData[] = [
     content: (
       <div>
         <p>
-          Hakubun is meant to be used with{" "}
+          WaniQult is meant to be used with{" "}
           <a href="https://www.wanikani.com/" target="_blank" rel="noopener">
             Wanikani
           </a>
@@ -292,7 +292,7 @@ const TokenInput = () => {
             <LogoContainer>
               <SvgIcon icon={<LogoIcon />} width="100%" height="25vh" />
             </LogoContainer>
-            <FallingText text="Hakubun" delay={0.5} duration={0.25} />
+            <FallingText text="WaniQult" delay={0.5} duration={0.25} />
           </HeadingAndLogoContainer>
           <p>
             A <em>(third-party)</em> Japanese Study App for Wanikani
