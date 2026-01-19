@@ -74,16 +74,16 @@ http://ionicframework.com/docs/theming/ */
   --pale-grey: #cebfd9;
 
   --wanikani-purple: #aa00ff;
-  --wanikani-pink: #ff00aa;
+  --wanikani-pink: #5b0c09;
   --wani-kani-pink-rgb: 255, 0, 170;
   --wani-kani-pink-rgba: rgba(255, 0, 170, 0.065);
   --wanikani-blue: #00aaff;
   --wanikani-blue-rgba: rgba(0, 170, 255, 0.065);
   --wanikani-blue-rgb: 0, 170, 255;
 
-  --wanikani-radical: #0af;
-  --wanikani-kanji: #f0a;
-  --wanikani-vocab: #aa00ff;
+  --wanikani-radical: #1b62a3;
+  --wanikani-kanji: #5b0c09;
+  --wanikani-vocab: #5b0c09;
   --wanikani-kana-vocab: #8800cc;
   --wanikani-reading: var(--darkest-purple);
 
