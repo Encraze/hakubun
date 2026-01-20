@@ -18,7 +18,6 @@ import { PreFlattenedAssignment } from "../types/Assignment";
 import AssignmentQueueCards from "../components/AssignmentQueueCards";
 import QueueHeader from "../components/QueueHeader";
 import LeaveSessionPrompt from "../components/LeaveSessionPrompt";
-import KeyboardShortcuts from "../components/KeyboardShortcuts";
 import { MainContent } from "../styles/BaseStyledComponents";
 import styled from "styled-components";
 
@@ -145,7 +144,6 @@ function LessonQuiz() {
             updateSubmitted={updateSubmitted}
           />
         )}
-        <KeyboardShortcuts />
       </Content>
     </>
   );

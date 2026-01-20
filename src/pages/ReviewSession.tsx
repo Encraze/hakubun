@@ -22,7 +22,6 @@ import { PreFlattenedAssignment } from "../types/Assignment";
 import { ReviewUpdateResponse } from "../types/Review";
 import QueueHeader from "../components/QueueHeader/QueueHeader";
 import AssignmentQueueCards from "../components/AssignmentQueueCards/AssignmentQueueCards";
-import KeyboardShortcuts from "../components/KeyboardShortcuts";
 import LeaveSessionPrompt from "../components/LeaveSessionPrompt";
 import FinishFlagIcon from "../images/finish-flag.svg";
 import { MainContent } from "../styles/BaseStyledComponents";
@@ -314,7 +313,6 @@ function ReviewSession() {
             <WrappingUpTxt>Wrapping Up!</WrappingUpTxt>
           </FlagAndTxtContainer>
         </WrapUpFlagContainer>
-        <KeyboardShortcuts />
       </Content>
     </>
   );

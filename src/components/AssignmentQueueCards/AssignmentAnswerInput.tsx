@@ -9,12 +9,20 @@ import {
 } from "../../services/AssignmentQueueService/AssignmentQueueService";
 import Modal from "../Modal";
 import Button from "../Button";
+import SvgIcon from "../SvgIcon";
+import NextIcon from "../../images/next-item.svg?react";
 import styled from "styled-components";
 
 const InputRow = styled(motion.div)`
   width: 100%;
   display: flex;
   flex-direction: column;
+  gap: 10px;
+`;
+
+const AnswerRow = styled.div`
+  display: flex;
+  align-items: center;
   gap: 10px;
 `;
 
@@ -33,6 +41,16 @@ const AnswerInput = styled(WanakanaInput)<AnswerInputProps>`
   background-color: ${({ inputcolor }) => inputcolor};
   font-family: ${({ translateToHiragana }) =>
     translateToHiragana && "var(--japanese-with-english-fallback-font-family)"};
+`;
+
+const SubmitBtn = styled(Button)`
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 12px;
+  border-radius: 8px;
+  height: 100%;
+  min-width: 44px;
 `;
 
 const HintButton = styled(Button)`
@@ -187,21 +205,33 @@ function AssignmentAnswerInput({
   return (
     <>
       <InputRow ref={inputContainerRef}>
-        <AnswerInput
-          inputcolor={inputColor}
-          inputRef={inputRef}
-          type="text"
-          value={userAnswer}
-          onKeyDown={(e: any) => {
-            if (e.key === "Enter") {
-              nextBtnClicked();
-            }
-          }}
-          translateToHiragana={isReadingType}
-          onChange={(e: any) => setUserAnswer(e.target.value)}
-          disabled={isSubmittingAnswer}
-          placeholder={isReadingType ? "答え" : ""}
-        />
+        <AnswerRow>
+          <AnswerInput
+            inputcolor={inputColor}
+            inputRef={inputRef}
+            type="text"
+            value={userAnswer}
+            onKeyDown={(e: any) => {
+              if (e.key === "Enter") {
+                nextBtnClicked();
+              }
+            }}
+            translateToHiragana={isReadingType}
+            onChange={(e: any) => setUserAnswer(e.target.value)}
+            disabled={isSubmittingAnswer}
+            placeholder={isReadingType ? "答え" : ""}
+          />
+          <SubmitBtn
+            className="base-button"
+            backgroundColor="var(--ion-color-tertiary)"
+            color="white"
+            onPress={nextBtnClicked}
+            aria-label="Submit answer"
+            disabled={isSubmittingAnswer}
+          >
+            <SvgIcon icon={<NextIcon />} width="1.5em" height="1.5em" />
+          </SubmitBtn>
+        </AnswerRow>
         <HintButtonRow>
           <HintButton
             className="base-button"

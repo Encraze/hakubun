@@ -138,8 +138,6 @@ test.todo("Correct review answer is marked as correct", async () => {
   expect(answerInput).toHaveValue(correctAnswer);
 
   // press twice to submit answer and move to next
-  await user.keyboard("[F12]");
-  await user.keyboard("[F12]");
 
   // TODO: check that the answer has been reviewed and marked as correct
   // const firstInQueue = assignmentQueueStoreResult.current.assignmentQueue[0];

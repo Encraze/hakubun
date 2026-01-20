@@ -10,7 +10,6 @@ import { toHiragana } from "wanakana";
 import useQueueStoreFacade from "../../stores/useQueueStore/useQueueStore.facade";
 import { isUserAnswerValid } from "../../services/AssignmentQueueService/AssignmentQueueService";
 import { closeAllToasts, displayToast } from "../Toast/Toast.service";
-import { useKeyDown } from "../../hooks/useKeyDown";
 import { SubjectType } from "../../types/Subject";
 import { AssignmentQueueItem } from "../../types/AssignmentQueueTypes";
 import AssignmentCharAndType from "./AssignmentCharAndType";
@@ -109,9 +108,6 @@ export const AssignmentQueueCard = ({
   const initialUserAnswer =
     !isSubmittingAnswer || savedUserAnswer === null ? "" : savedUserAnswer;
   const [userAnswer, setUserAnswer] = useState(initialUserAnswer);
-
-  useKeyDown(() => attemptToAdvance(), ["F12"]);
-  useKeyDown(() => retryTriggered(), ["F6"]);
 
   const controls = useAnimation();
   const dragX = useMotionValue(0);
