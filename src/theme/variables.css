@@ -146,7 +146,7 @@ http://ionicframework.com/docs/theming/ */
   --contrast-color: var(--light-grey);
   --text-color: #f5eaff;
   --button-color: var(--ion-color-primary);
-  --button-text-color: #120715;
+  --button-text-color: #f9efff;
   --contrast-text-color: #120715;
   --link-text-color: #f07bff;
   --focus-color: #f7b0ff;
@@ -198,7 +198,7 @@ http://ionicframework.com/docs/theming/ */
     --box-shadow-color: rgba(11, 7, 16, 0.7);
     --text-color: #f5eaff;
     --button-color: var(--ion-color-secondary);
-    --button-text-color: #120715;
+    --button-text-color: #f9efff;
     --link-text-color: #f07bff;
     --contrast-text-color: #120715;
     --focus-color: #f7b0ff;

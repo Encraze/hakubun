@@ -12,7 +12,8 @@ import Button from "../Button";
 import styled from "styled-components";
 
 const UserMeaningChip = styled(Button)`
-  background-color: var(--light-grey);
+  background-color: var(--wanikani-apprentice);
+  color: white;
   padding: 8px;
   border-radius: 16px;
   display: flex;

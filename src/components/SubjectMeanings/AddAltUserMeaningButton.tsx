@@ -22,6 +22,7 @@ const AddButton = styled.button`
   border-radius: 16px;
   border: 2px solid black;
   font-size: 0.9rem;
+  color: var(--button-text-color);
 
   user-select: text;
   -webkit-user-select: text;
@@ -58,7 +59,7 @@ const MeaningInput = styled.input`
   flex: 1;
 `;
 
-const SubmitButton = styled(Button)`
+const SubmitButton = styled.button`
   padding: 10px;
   border-radius: 12px;
   border: 1px solid black;
@@ -140,8 +141,6 @@ function AddAltUserMeaningButton({ subject }: Props) {
                   <SubmitButton
                     className="base-button"
                     type="submit"
-                    backgroundColor="var(--ion-color-tertiary)"
-                    color="black"
                   >
                     Add
                   </SubmitButton>
