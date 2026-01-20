@@ -14,7 +14,7 @@ const ForecastCard = styled(Card)`
 `;
 
 const ToggleIcon = styled.span<{ isExpanded: boolean }>`
-  font-size: 1.1rem;
+  font-size: 1em;
   line-height: 1;
   transform: ${({ isExpanded }) =>
     isExpanded ? "rotate(180deg)" : "rotate(0deg)"};
