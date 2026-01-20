@@ -134,7 +134,7 @@ function KanjiDetailTabs({ kanji, defaultTabKey, reviewType }: Props) {
         },
         {
           id: "pieces",
-          label: "Pieces",
+          label: "Parts",
           tabContents: (
             <SubjDetailTabContainer>
               <RadicalCombination
