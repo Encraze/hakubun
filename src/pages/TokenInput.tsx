@@ -14,7 +14,6 @@ import Accordion from "../components/Accordion";
 import SvgIcon from "../components/SvgIcon";
 import WavesBgImgLight from "../images/layered-waves-bg-light.svg";
 import WavesBgImgDark from "../images/layered-waves-bg-dark.svg";
-import LogoIcon from "../images/logo.svg?react";
 import OpenEyeIcon from "../images/open-eye.svg?react";
 import CrossedOutEyeIcon from "../images/crossed-out-eye.svg?react";
 import {
@@ -107,6 +106,12 @@ const LogoContainer = styled.div`
   justify-content: flex-end;
 `;
 
+const AppLogo = styled.img`
+  width: 100%;
+  height: 25vh;
+  object-fit: contain;
+`;
+
 const ButtonRow = styled.div`
   width: 100%;
   display: flex;
@@ -168,7 +173,7 @@ const accordionItems: AccordionItemData[] = [
     content: (
       <div>
         <p>
-          WaniQult is meant to be used with{" "}
+          SakuraQult is meant to be used with{" "}
           <a href="https://www.wanikani.com/" target="_blank" rel="noopener">
             Wanikani
           </a>
@@ -290,9 +295,9 @@ const TokenInput = () => {
         <Content $bgimg={bgImg}>
           <HeadingAndLogoContainer>
             <LogoContainer>
-              <SvgIcon icon={<LogoIcon />} width="100%" height="25vh" />
+              <AppLogo src="/sakura_icon.png" alt="SakuraQult logo" />
             </LogoContainer>
-            <FallingText text="WaniQult" delay={0.5} duration={0.25} />
+            <FallingText text="SakuraQult" delay={0.5} duration={0.25} />
           </HeadingAndLogoContainer>
           <p>
             A <em>(third-party)</em> Japanese Study App for Wanikani

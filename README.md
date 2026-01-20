@@ -1,9 +1,9 @@
 <div align="center">
   <a href="https://github.com/salemlf/hakubun">
-    <img src="./src/images/logo.svg" alt="WaniQult Logo - Crabigator creature with alligator head and crab arm" width="100" height="100">
+    <img src="./src/images/logo.svg" alt="SakuraQult Logo - Crabigator creature with alligator head and crab arm" width="100" height="100">
   </a>
 
-  <h1 style="font-size: 2.5rem" align="center">WaniQult</h3>
+  <h1 style="font-size: 2.5rem" align="center">SakuraQult</h3>
 
   <p align="center">
     A cross-platform, third-party Japanese Study App for Wanikani
@@ -33,7 +33,7 @@
 
 ## Overview
 
-WaniQult is a Japanese learning app that can be used with [Wanikani](https://www.wanikani.com/), an SRS-based Japanese learning service. Learn and review radicals, kanji, and vocabulary, easily search for subjects, and explore content across levels.
+SakuraQult is a Japanese learning app that can be used with [Wanikani](https://www.wanikani.com/), an SRS-based Japanese learning service. Learn and review radicals, kanji, and vocabulary, easily search for subjects, and explore content across levels.
 
 ## Download the App :zap:
 
@@ -71,7 +71,7 @@ The web version is still being tested, but the beta versions of both Android and
 
 ## Privacy Policy/Information Collected
 
-WaniQult uses [Logrocket](https://logrocket.com/), a log collecting tool, to detect common errors that users are experiencing.
+SakuraQult uses [Logrocket](https://logrocket.com/), a log collecting tool, to detect common errors that users are experiencing.
 
 This means the following information may be stored:
 
@@ -107,7 +107,7 @@ Please [email me](mailto:salemlfenn@gmail.com) if you have any questions or conc
 
 ### Search
 
-<img src="./resources/app-screenshots/search/empty-input.jpg" width="100" alt="empty search box with WaniQult crabigator asking user to search for something" /> <img src="./resources/app-screenshots/search/no-results.jpg" width="100" alt="search box with nonsense input, WaniQult crabigator saying 'no results' while looking distressed" /> <img src="./resources/app-screenshots/search/results.jpg" width="100" alt="search box with 'cat' input and long list of results to choose from" />
+<img src="./resources/app-screenshots/search/empty-input.jpg" width="100" alt="empty search box with SakuraQult crabigator asking user to search for something" /> <img src="./resources/app-screenshots/search/no-results.jpg" width="100" alt="search box with nonsense input, SakuraQult crabigator saying 'no results' while looking distressed" /> <img src="./resources/app-screenshots/search/results.jpg" width="100" alt="search box with 'cat' input and long list of results to choose from" />
 
 ### Subject Details
 
@@ -115,7 +115,7 @@ Please [email me](mailto:salemlfenn@gmail.com) if you have any questions or conc
 
 ## Contributing :trophy:
 
-Contributions are appreciated! See [this doc](.github/CONTRIBUTING.md) for full details on how to contribute, and the [development section](#development-desktop_computer) for how to build and test WaniQult
+Contributions are appreciated! See [this doc](.github/CONTRIBUTING.md) for full details on how to contribute, and the [development section](#development-desktop_computer) for how to build and test SakuraQult
 
 ## Development :desktop_computer:
 
@@ -177,7 +177,7 @@ You can then select the type of iOS device you'd like to use as a simulator
 
   <img src="./resources/debugging-screenshots/safari-web-dev-settings.png" width="200" alt="Safari settings displaying Show features for web developers setting" />
 
-- Open Safari and click the iOS simulator for WaniQult under Develop -> iOS device you chose as simulator -> IP address displayed. _If this is not displayed, make sure you followed the previous step. If it's still not displayed, opening Xcode can sometimes make it appear_
+- Open Safari and click the iOS simulator for SakuraQult under Develop -> iOS device you chose as simulator -> IP address displayed. _If this is not displayed, make sure you followed the previous step. If it's still not displayed, opening Xcode can sometimes make it appear_
 
   <img src="./resources/debugging-screenshots/safari-select-ios-simulator.png" width="200" alt="selecting iOS simulator" />
   <img src="./resources/debugging-screenshots/safari-inspecting-ios-device.png" width="200" alt="inspecting iOS simulator" />
@@ -213,7 +213,7 @@ This project is tested with BrowserStack
 
 **Note: it's unlikely you'll need to know this info, just used for GitHub workflows/CICD**
 
-[Fastlane](https://fastlane.tools/) is a tool used to build and deploy the Android and iOS apps for WaniQult.
+[Fastlane](https://fastlane.tools/) is a tool used to build and deploy the Android and iOS apps for SakuraQult.
 
 #### Install Dependencies
 

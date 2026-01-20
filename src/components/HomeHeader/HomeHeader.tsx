@@ -5,7 +5,6 @@ import Button from "../Button";
 import RefreshHomeButton from "../RefreshHomeButton";
 import SvgIcon from "../SvgIcon";
 import SettingsIcon from "../../images/settings.svg?react";
-import LogoIcon from "../../images/logo.svg?react";
 import { Header } from "../../styles/BaseStyledComponents";
 import styled from "styled-components";
 
@@ -29,6 +28,12 @@ const UserInfoContainer = styled.div`
     font-size: 1.25rem;
     margin: 0;
   }
+`;
+
+const AppLogo = styled.img`
+  width: 2em;
+  height: 2em;
+  object-fit: contain;
 `;
 
 const RefreshAndSettingsContainer = styled.div`
@@ -87,8 +92,8 @@ function HomeHeader() {
     <HeaderWrapper bgcolor="var(--foreground-color)">
       <FirstRow>
         <UserInfoContainer>
-          <SvgIcon icon={<LogoIcon />} width="2em" height="2em" />
-          <AppName data-testid="home-heading">WaniQult</AppName>
+          <AppLogo src="/sakura_icon.png" alt="SakuraQult logo" />
+          <AppName data-testid="home-heading">SakuraQult</AppName>
         </UserInfoContainer>
         <RefreshAndSettingsContainer>
           <RefreshHomeButton />
