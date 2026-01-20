@@ -60,6 +60,7 @@
     "test": "vitest --environment=jsdom",
     "coverage": "vitest --environment=jsdom run --coverage",
     "build": "vite build",
+    "build-android-apk": "powershell -ExecutionPolicy Bypass -File ./scripts/build-android-apk.ps1",
     "format": "prettier . --write --config .prettierrc",
     "check-format": "prettier . --check --config .prettierrc",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",

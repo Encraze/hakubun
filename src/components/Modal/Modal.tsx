@@ -54,8 +54,8 @@ const IconAndTitleContainer = styled.div`
   word-break: break-word;
 `;
 
-const OVERLAY_DELAY = 0.3;
-const CONTENT_DELAY = 0.5;
+const OVERLAY_DELAY = 0.1;
+const CONTENT_DELAY = 0.1;
 type ContentRef = HTMLDivElement;
 
 type ContentProps = {
@@ -67,6 +67,7 @@ type ContentProps = {
   delayOpenClose?: boolean;
   icon?: React.ReactNode;
   closeOnOutsidePress?: boolean;
+  showCloseIcon?: boolean;
 };
 
 export const ModalContent = forwardRef<ContentRef, ContentProps>(
@@ -80,6 +81,7 @@ export const ModalContent = forwardRef<ContentRef, ContentProps>(
       icon,
       closeOnOutsidePress = true,
       delayOpenClose = false,
+      showCloseIcon = true,
       ...props
     },
     forwardedRef
@@ -102,12 +104,14 @@ export const ModalContent = forwardRef<ContentRef, ContentProps>(
                       opacity: 1,
                       transition: {
                         delay: delayOpenClose ? CONTENT_DELAY : OVERLAY_DELAY,
+                        duration: 0.15,
                       },
                     }}
                     exit={{
                       opacity: 0,
                       transition: {
                         delay: delayOpenClose ? CONTENT_DELAY : OVERLAY_DELAY,
+                        duration: 0.15,
                       },
                     }}
                   />
@@ -125,15 +129,20 @@ export const ModalContent = forwardRef<ContentRef, ContentProps>(
                   }}
                 >
                   <Content
-                    initial={{ scale: 0 }}
-                    // animate={{ scale: 1 }}
+                    initial={{ opacity: 0 }}
                     animate={{
-                      scale: 1,
-                      transition: { delay: delayOpenClose ? CONTENT_DELAY : 0 },
+                      opacity: 1,
+                      transition: {
+                        delay: delayOpenClose ? CONTENT_DELAY : 0,
+                        duration: 0.15,
+                      },
                     }}
                     exit={{
-                      scale: 0,
-                      transition: { delay: delayOpenClose ? CONTENT_DELAY : 0 },
+                      opacity: 0,
+                      transition: {
+                        delay: delayOpenClose ? CONTENT_DELAY : 0,
+                        duration: 0.15,
+                      },
                     }}
                   >
                     <TitleBar>
@@ -143,13 +152,15 @@ export const ModalContent = forwardRef<ContentRef, ContentProps>(
                         )}
                         <Title>{title}</Title>
                       </IconAndTitleContainer>
-                      <ClosePrimitive aria-label="Close">
-                        <SvgIcon
-                          icon={<CloseIcon />}
-                          width="2.5em"
-                          height="2.5em"
-                        />
-                      </ClosePrimitive>
+                      {showCloseIcon && (
+                        <ClosePrimitive aria-label="Close">
+                          <SvgIcon
+                            icon={<CloseIcon />}
+                            width="2.5em"
+                            height="2.5em"
+                          />
+                        </ClosePrimitive>
+                      )}
                     </TitleBar>
                     {description && <Description>{description}</Description>}
                     {children}
