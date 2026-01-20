@@ -35,29 +35,57 @@ const getTabsForVocab = (vocab: Subject, isKanaVocab: boolean) => {
   // const isKanaVocab = vocab.object === "kana_vocabulary";
   const hasReadings = vocab.readings && vocab.readings.length !== 0;
 
-  const meaningTab: TabData[] = [
-    {
-      id: "meaning",
-      label: "Meaning",
-      tabContents: (
-        <SubjDetailTabContainer>
-          <SubjectMeanings subject={vocab} showPrimaryMeaning={true} />
-          <PartsOfSpeechContainer>
-            <PartsOfSpeech vocab={vocab as Vocabulary} />
-          </PartsOfSpeechContainer>
-          {isKanaVocab && <KanaVocabReading vocab={vocab as KanaVocabulary} />}
-          <VocabMeaningExplanation vocab={vocab as Vocabulary} />
-          {isKanaVocab && vocab.context_sentences && (
-            <ContextSentences sentences={vocab.context_sentences} />
-          )}
-        </SubjDetailTabContainer>
-      ),
-    },
-  ];
+  const meaningTab: TabData = {
+    id: "meaning",
+    label: "Mean",
+    tabContents: (
+      <SubjDetailTabContainer>
+        <SubjectMeanings subject={vocab} showPrimaryMeaning={true} />
+        <PartsOfSpeechContainer>
+          <PartsOfSpeech vocab={vocab as Vocabulary} />
+        </PartsOfSpeechContainer>
+        <VocabMeaningExplanation vocab={vocab as Vocabulary} />
+      </SubjDetailTabContainer>
+    ),
+  };
 
-  const breakdownTab: TabData = {
-    id: "breakdown",
-    label: "Breakdown",
+  const readingTab: TabData = {
+    id: "reading",
+    label: "Read",
+    tabContents: (
+      <SubjDetailTabContainer>
+        <VocabReadingSection>
+          <ReadingHeading>Vocab Reading</ReadingHeading>
+          {isKanaVocab ? (
+            <KanaVocabReading vocab={vocab as KanaVocabulary} />
+          ) : (
+            hasReadings && (
+              <VocabReadings
+                vocab={vocab as Vocabulary}
+                subjectReadings={vocab.readings!}
+                hideReadingTxt={true}
+              />
+            )
+          )}
+        </VocabReadingSection>
+        <VocabReadingExplanation vocab={vocab as Vocabulary} />
+      </SubjDetailTabContainer>
+    ),
+  };
+
+  const contextTab: TabData = {
+    id: "context",
+    label: "Context",
+    tabContents: (
+      <SubjDetailTabContainer>
+        <ContextSentences sentences={vocab.context_sentences ?? []} />
+      </SubjDetailTabContainer>
+    ),
+  };
+
+  const kanjiTab: TabData = {
+    id: "kanji",
+    label: "Kanji",
     tabContents: (
       <SubjDetailTabContainer>
         <KanjiUsedInVocab
@@ -69,34 +97,11 @@ const getTabsForVocab = (vocab: Subject, isKanaVocab: boolean) => {
     ),
   };
 
-  const readingTab: TabData = {
-    id: "reading",
-    label: "Reading",
-    tabContents: (
-      <SubjDetailTabContainer>
-        <VocabReadingSection>
-          <ReadingHeading>Vocab Reading</ReadingHeading>
-          {hasReadings && (
-            <VocabReadings
-              vocab={vocab as Vocabulary}
-              subjectReadings={vocab.readings!}
-              hideReadingTxt={true}
-            />
-          )}
-        </VocabReadingSection>
-        <VocabReadingExplanation vocab={vocab as Vocabulary} />
-        {vocab.context_sentences && (
-          <ContextSentences sentences={vocab.context_sentences} />
-        )}
-      </SubjDetailTabContainer>
-    ),
-  };
-
   if (isKanaVocab) {
-    return [...meaningTab];
+    return [meaningTab, readingTab, contextTab];
   }
 
-  return [breakdownTab, ...meaningTab, readingTab];
+  return [meaningTab, readingTab, contextTab, kanjiTab];
 };
 
 type Props = {
@@ -111,7 +116,7 @@ function VocabDetailTabs({ vocab, reviewType, selectFirstTab = false }: Props) {
   if (isKanaVocab) {
     defaultTabKey = "meaning";
   } else if (selectFirstTab) {
-    defaultTabKey = "breakdown";
+    defaultTabKey = "meaning";
   }
   const tabData = getTabsForVocab(vocab, isKanaVocab);
 

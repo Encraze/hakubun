@@ -62,20 +62,8 @@ function KanjiDetailTabs({ kanji, defaultTabKey, reviewType }: Props) {
       setSelectedTabKey={setSelectedTabKey}
       tabs={[
         {
-          id: "radicals",
-          label: "Radicals",
-          tabContents: (
-            <SubjDetailTabContainer>
-              <RadicalCombination
-                kanji={kanji as Kanji}
-                displayQuestionTxt={true}
-              />
-            </SubjDetailTabContainer>
-          ),
-        },
-        {
           id: "meaning",
-          label: "Meaning",
+          label: "Mean",
           tabContents: (
             <SubjDetailTabContainer>
               <SubjectMeanings subject={kanji} showPrimaryMeaning={true} />
@@ -85,7 +73,7 @@ function KanjiDetailTabs({ kanji, defaultTabKey, reviewType }: Props) {
         },
         {
           id: "reading",
-          label: "Reading",
+          label: "Read",
           tabContents: (
             <SubjDetailTabContainer>
               <SubjDetailSection>
@@ -113,8 +101,8 @@ function KanjiDetailTabs({ kanji, defaultTabKey, reviewType }: Props) {
           ),
         },
         {
-          id: "examples",
-          label: "Examples",
+          id: "usage",
+          label: "Usage",
           tabContents: (
             <SubjDetailTabContainer>
               <SubjDetailSection>
@@ -141,6 +129,18 @@ function KanjiDetailTabs({ kanji, defaultTabKey, reviewType }: Props) {
                   )
                 )}
               </SubjDetailSection>
+            </SubjDetailTabContainer>
+          ),
+        },
+        {
+          id: "pieces",
+          label: "Pieces",
+          tabContents: (
+            <SubjDetailTabContainer>
+              <RadicalCombination
+                kanji={kanji as Kanji}
+                displayQuestionTxt={true}
+              />
             </SubjDetailTabContainer>
           ),
         },

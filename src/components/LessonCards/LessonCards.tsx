@@ -58,7 +58,7 @@ function LessonCard({ lesson }: CardProps) {
           <KanjiDetailTabs
             kanji={itemAsSubj}
             reviewType={lesson.review_type}
-            defaultTabKey="radicals"
+            defaultTabKey="meaning"
           />
         )}
         {(lesson.object == "vocabulary" ||
