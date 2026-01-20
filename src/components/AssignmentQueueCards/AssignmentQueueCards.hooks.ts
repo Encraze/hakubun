@@ -6,10 +6,6 @@ import {
   checkIfReviewIsComplete,
   isUserAnswerCorrect,
 } from "../../services/AssignmentQueueService/AssignmentQueueService";
-import {
-  capitalizeWord,
-  getSrsNameBySrsLvl,
-} from "../../services/MiscService/MiscService";
 import { getReadingAudio } from "../../services/AudioService/AudioService";
 import { AssignmentQueueItem } from "../../types/AssignmentQueueTypes";
 import { SubjectReading } from "../../types/Subject";
@@ -17,7 +13,6 @@ import { SubjectReading } from "../../types/Subject";
 export const useAssignmentQueue = () => {
   const {
     showPopoverMsg,
-    correctShowResult,
     correctMoveToNext,
     wrongMoveToNext,
     wrongShowResult,
@@ -27,7 +22,6 @@ export const useAssignmentQueue = () => {
   } = useQueueStoreFacade();
 
   const {
-    sessionType,
     assignmentQueue,
     updateQueueItem,
     incrementCurrQueueIndex,
@@ -36,33 +30,7 @@ export const useAssignmentQueue = () => {
   } = useAssignmentQueueStoreFacade();
   const {
     pronunciationVoice,
-    reviewNextItemOnCorrect,
-    lessonNextItemOnCorrect,
   } = useUserSettingsStoreFacade();
-  const moveToNextOnCorrect =
-    sessionType === "review"
-      ? reviewNextItemOnCorrect
-      : lessonNextItemOnCorrect;
-
-  const displaySRSStatus = (queueItem: AssignmentQueueItem) => {
-    const endingSRS = queueItem.ending_srs_stage!;
-
-    const hasIncreased = endingSRS > queueItem.srs_stage;
-    const endingSRSName = capitalizeWord(getSrsNameBySrsLvl(endingSRS));
-
-    // TODO: change to use more specific types that display up or down arrows based on correct/incorrect
-    const popoverToDisplay = hasIncreased
-      ? ({
-          message: `Increasing to ${endingSRSName}...`,
-          messageType: "correct",
-        } as const)
-      : ({
-          message: `Decreasing to ${endingSRSName}...`,
-          messageType: "incorrect",
-        } as const);
-
-    showPopoverMsg(popoverToDisplay);
-  };
 
   const playAudioIfReadingAndAvailable = (
     assignmentQueueItem: AssignmentQueueItem,
@@ -153,12 +121,8 @@ export const useAssignmentQueue = () => {
     );
 
     let updatedReviewItem = currReviewItem;
-    showPopoverMsg({ message: "CORRECT", messageType: "correct" });
-
     if (isReviewItemComplete) {
       updatedReviewItem = calculateSRSLevel(assignmentQueue, updatedReviewItem);
-
-      displaySRSStatus(updatedReviewItem);
     }
 
     const wasWrongFirstAttempt = updatedReviewItem.is_reviewed;
@@ -176,14 +140,10 @@ export const useAssignmentQueue = () => {
       updateQueueItem(updatedReviewItem);
     }
 
-    if (moveToNextOnCorrect) {
-      correctMoveToNext();
-      incrementCurrQueueIndex();
-      submitChoice();
-      setUserAnswer("");
-    } else {
-      correctShowResult();
-    }
+    correctMoveToNext();
+    incrementCurrQueueIndex();
+    submitChoice();
+    setUserAnswer("");
   };
 
   const handleNextCard = (
