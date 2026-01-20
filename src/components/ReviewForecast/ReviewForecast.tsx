@@ -6,7 +6,39 @@ import DailyReviewForecast from "./DailyReviewForecast";
 import LoadingDots from "../LoadingDots";
 import Card from "../Card";
 import { LoadingContainer } from "../../styles/BaseStyledComponents";
-import Tabs from "../Tabs";
+import styled from "styled-components";
+
+const ForecastCard = styled(Card)`
+  cursor: pointer;
+  user-select: none;
+`;
+
+const ToggleIcon = styled.span<{ isExpanded: boolean }>`
+  font-size: 1.1rem;
+  line-height: 1;
+  transform: ${({ isExpanded }) =>
+    isExpanded ? "rotate(180deg)" : "rotate(0deg)"};
+  transition: transform 150ms ease;
+`;
+
+const ForecastList = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+`;
+
+const DaySeparator = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-weight: 600;
+`;
+
+const SeparatorLine = styled.div`
+  flex: 1;
+  height: 2px;
+  background: rgba(0, 0, 0, 0.15);
+`;
 
 const dayOfWeekNames = [
   "Sunday",
@@ -51,7 +83,7 @@ const createStartAndEndDatesForWeek = (date: Date): StartAndEndTimeInfo[] => {
 
 // TODO: fix issue where not reloading all data once coming back to page
 function ReviewForecast() {
-  const [selectedTabKey, setSelectedTabKey] = useState<string>("0");
+  const [isExpanded, setIsExpanded] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [startAndEndTimes, setStartAndEndTimes] = useState<
     StartAndEndTimeInfo[]
@@ -100,35 +132,41 @@ function ReviewForecast() {
           <LoadingDots size="md" />
         </LoadingContainer>
       ) : (
-        <Card
+        <ForecastCard
           margin="12px 0"
           headerBgColor="var(--ion-color-primary)"
           title="Review Forecast"
           headerTextColor="black"
+          headerRight={<ToggleIcon isExpanded={isExpanded}>▾</ToggleIcon>}
+          role="button"
+          tabIndex={0}
+          aria-expanded={isExpanded}
+          onClick={() => setIsExpanded((prev) => !prev)}
+          onKeyDown={(event) => {
+            if (event.key === "Enter" || event.key === " ") {
+              event.preventDefault();
+              setIsExpanded((prev) => !prev);
+            }
+          }}
         >
-          <Tabs
-            id="reviewForecastTabs"
-            tabBgColor="var(--ion-color-primary)"
-            roundedContainer={true}
-            selectedTabKey={selectedTabKey}
-            setSelectedTabKey={setSelectedTabKey}
-            tabs={startAndEndTimes.map((forecastForDayTimes, index) => {
-              return {
-                key: index.toString(),
-                id: index.toString(),
-                label: forecastForDayTimes.dayOfWeek,
-                tabContents: (
+          {isExpanded && (
+            <ForecastList>
+              {startAndEndTimes.map((forecastForDayTimes, index) => (
+                <div key={index}>
+                  <DaySeparator>
+                    <span>{forecastForDayTimes.dayOfWeek}</span>
+                    <SeparatorLine />
+                  </DaySeparator>
                   <DailyReviewForecast
-                    key={index}
                     index={index}
                     startDateIsoString={forecastForDayTimes.startTimeIsoString}
                     endDateIsoString={forecastForDayTimes.endTimeIsoString}
                   />
-                ),
-              };
-            })}
-          />
-        </Card>
+                </div>
+              ))}
+            </ForecastList>
+          )}
+        </ForecastCard>
       )}
     </>
   );

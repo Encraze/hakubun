@@ -30,6 +30,10 @@ const CardHeader = styled.header<
   color: ${({ txtcolor }) => txtcolor};
   padding: 10px;
   border-radius: 8px 8px 0 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
 `;
 
 const CardContent = styled.div`
@@ -40,6 +44,7 @@ const CardContent = styled.div`
 type Props = {
   children?: ReactNode;
   title?: string;
+  headerRight?: ReactNode;
   cardBgColor?: string;
   cardTextColor?: string;
   headerBgColor?: string;
@@ -51,6 +56,7 @@ type Props = {
 function Card({
   children,
   title,
+  headerRight,
   headerTextColor = "var(--text-color)",
   headerBgColor = "var(--foreground-color)",
   headerFontSize = "1.5rem",
@@ -72,7 +78,8 @@ function Card({
           sizeoffont={headerFontSize}
           txtcolor={headerTextColor}
         >
-          {title}
+          <span>{title}</span>
+          {headerRight}
         </CardHeader>
       )}
       <CardContent>{children}</CardContent>
