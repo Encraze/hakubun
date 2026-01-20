@@ -14,7 +14,6 @@ import { SubjectType } from "../../types/Subject";
 import { AssignmentQueueItem } from "../../types/AssignmentQueueTypes";
 import AssignmentCharAndType from "./AssignmentCharAndType";
 import AssignmentAnswerInput from "./AssignmentAnswerInput";
-import Emoji from "../Emoji";
 import SvgIcon from "../SvgIcon";
 import RetryIcon from "../../images/retry.svg?react";
 import NextIcon from "../../images/next-item.svg?react";
@@ -26,17 +25,6 @@ import {
   SwipeTxt,
   SwipeIcon,
 } from "./AssignmentQueueCardsStyled";
-import styled from "styled-components";
-
-const SwipeMeHint = styled.p`
-  font-size: 0.9rem;
-  text-align: center;
-  position: absolute;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  bottom: 0;
-  color: white;
-`;
 
 const queueCardVariants = {
   submit: () => ({
@@ -295,9 +283,6 @@ export const AssignmentQueueCard = ({
                 <SwipeTxt>Next</SwipeTxt>
               </SwipeIconAndText>
             </NextCardOverlay>
-            <SwipeMeHint>
-              Swipe me <Emoji symbol="🙂" label="Smiling face" />
-            </SwipeMeHint>
           </AssignmentCardStyled>
         </>
       )}

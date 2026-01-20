@@ -13,7 +13,10 @@ type Props = {
   value: string;
   onChange: (e: any) => void;
   translateToHiragana: boolean;
-  inputRef: React.MutableRefObject<HTMLInputElement>;
+  inputRef: React.MutableRefObject<
+    HTMLInputElement | HTMLTextAreaElement | null
+  >;
+  elementType?: "input" | "textarea";
 };
 
 function WanakanaInput({
@@ -21,6 +24,7 @@ function WanakanaInput({
   inputRef,
   onChange,
   translateToHiragana,
+  elementType = "input",
   ...props
 }: Props) {
   const translatedVal = translateInputValue(value, translateToHiragana);
@@ -31,7 +35,7 @@ function WanakanaInput({
     onChange(e);
   };
 
-  return createElement("input", {
+  return createElement(elementType, {
     ref: inputRef,
     value: translatedVal,
     onChange: handleChange,

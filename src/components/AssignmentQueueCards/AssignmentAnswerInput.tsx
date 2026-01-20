@@ -10,7 +10,7 @@ import {
 import Modal from "../Modal";
 import Button from "../Button";
 import SvgIcon from "../SvgIcon";
-import NextIcon from "../../images/next-item.svg?react";
+import NextArrowIcon from "../../images/next-arrow-color.svg?react";
 import styled from "styled-components";
 
 const InputRow = styled(motion.div)`
@@ -18,6 +18,8 @@ const InputRow = styled(motion.div)`
   display: flex;
   flex-direction: column;
   gap: 10px;
+  padding: 0 12px;
+  margin-top: 6px;
 `;
 
 const AnswerRow = styled.div`
@@ -41,16 +43,16 @@ const AnswerInput = styled(WanakanaInput)<AnswerInputProps>`
   background-color: ${({ inputcolor }) => inputcolor};
   font-family: ${({ translateToHiragana }) =>
     translateToHiragana && "var(--japanese-with-english-fallback-font-family)"};
+  resize: none;
+  overflow: hidden;
+  min-height: 44px;
 `;
 
 const SubmitBtn = styled(Button)`
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 8px 12px;
-  border-radius: 8px;
-  height: 100%;
-  min-width: 44px;
+  padding: 0;
 `;
 
 const HintButton = styled(Button)`
@@ -62,6 +64,10 @@ const HintButton = styled(Button)`
 const HintButtonRow = styled.div`
   display: flex;
   justify-content: center;
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  transform: translate(-50%, -50%);
 `;
 
 const HintList = styled.ul`
@@ -119,7 +125,7 @@ function AssignmentAnswerInput({
 }: Props) {
   const { isSubmittingAnswer } = useQueueStoreFacade();
   const reviewType = currentReviewItem.review_type;
-  const inputRef = useRef<HTMLInputElement>();
+  const inputRef = useRef<HTMLTextAreaElement | null>(null);
   const [inputContainerRef, animate] = useAnimate();
   const isReadingType = reviewType === "reading";
   const [isHintOpen, setIsHintOpen] = useState(false);
@@ -192,6 +198,12 @@ function AssignmentAnswerInput({
   });
 
   useEffect(() => {
+    if (!inputRef.current) return;
+    inputRef.current.style.height = "auto";
+    inputRef.current.style.height = `${inputRef.current.scrollHeight}px`;
+  }, [userAnswer]);
+
+  useEffect(() => {
     if (shakeInputTrigger) {
       animate(inputContainerRef.current, {
         x: [-5, 5, -5, 5, -5, 5, -5, 5, -5, 5, -5, 5, 0],
@@ -209,10 +221,12 @@ function AssignmentAnswerInput({
           <AnswerInput
             inputcolor={inputColor}
             inputRef={inputRef}
-            type="text"
+            elementType="textarea"
+            rows={1}
             value={userAnswer}
             onKeyDown={(e: any) => {
               if (e.key === "Enter") {
+                e.preventDefault();
                 nextBtnClicked();
               }
             }}
@@ -222,14 +236,12 @@ function AssignmentAnswerInput({
             placeholder={isReadingType ? "答え" : ""}
           />
           <SubmitBtn
-            className="base-button"
-            backgroundColor="var(--ion-color-tertiary)"
-            color="white"
+            backgroundColor="transparent"
             onPress={nextBtnClicked}
             aria-label="Submit answer"
             disabled={isSubmittingAnswer}
           >
-            <SvgIcon icon={<NextIcon />} width="1.5em" height="1.5em" />
+            <SvgIcon icon={<NextArrowIcon />} width="3.5em" height="3.5em" />
           </SubmitBtn>
         </AnswerRow>
         <HintButtonRow>

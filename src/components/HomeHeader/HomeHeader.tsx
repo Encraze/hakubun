@@ -93,7 +93,7 @@ function HomeHeader() {
       <FirstRow>
         <UserInfoContainer>
           <AppLogo src="/sakura_icon.png" alt="SakuraQult logo" />
-          <AppName data-testid="home-heading">SakuraQult</AppName>
+          <AppName data-testid="home-heading">桜カルト</AppName>
         </UserInfoContainer>
         <RefreshAndSettingsContainer>
           <RefreshHomeButton />
