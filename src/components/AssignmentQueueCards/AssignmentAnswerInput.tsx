@@ -39,7 +39,7 @@ const AnswerInput = styled(WanakanaInput)<AnswerInputProps>`
   padding: 12px;
   text-align: center;
   font-size: 1.25rem;
-  color: black;
+  color: var(--button-text-color);
   background-color: ${({ inputcolor }) => inputcolor};
   font-family: ${({ translateToHiragana }) =>
     translateToHiragana && "var(--japanese-with-english-fallback-font-family)"};

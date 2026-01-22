@@ -60,6 +60,8 @@ function KanjiDetailTabs({ kanji, defaultTabKey, reviewType }: Props) {
       id={`kanjiTabs${kanji.id}${reviewType}`}
       selectedTabKey={selectedTabKey}
       setSelectedTabKey={setSelectedTabKey}
+      tabBgColor="var(--wanikani-blue)"
+      tabSelectionColor="white"
       tabs={[
         {
           id: "meaning",

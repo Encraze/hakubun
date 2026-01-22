@@ -42,7 +42,7 @@ export const initialState: UserSettingsState = {
     displayName: "Female, Tokyo accent",
   },
   lessonBatchSize: "2",
-  reviewBatchSize: "5",
+  reviewBatchSize: "All",
   lessonSortOrderOption: getSortOrderOptionById("level_asc"),
   reviewSortOrderOption: getSortOrderOptionById("shuffled"),
   reviewBackToBackOption: "disabled",

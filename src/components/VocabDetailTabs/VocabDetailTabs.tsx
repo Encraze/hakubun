@@ -127,6 +127,8 @@ function VocabDetailTabs({ vocab, reviewType, selectFirstTab = false }: Props) {
       id={`vocabTabs${vocab.id}${reviewType}`}
       selectedTabKey={selectedTabKey}
       setSelectedTabKey={setSelectedTabKey}
+      tabBgColor="var(--wanikani-blue)"
+      tabSelectionColor="white"
       tabs={tabData}
     />
   );

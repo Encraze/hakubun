@@ -37,9 +37,14 @@ function BasicAssignmentSettings({
   );
 
   const availBatchSizes = ASSIGNMENT_BATCH_SIZES.filter((batchSize) => {
-    return Number.parseInt(batchSize)
-      ? Number.parseInt(batchSize) <= assignmentData.length
-      : true;
+    if (batchSize === "All") {
+      return true;
+    }
+
+    const parsedBatchSize = Number.parseInt(batchSize);
+    return !Number.isNaN(parsedBatchSize)
+      ? parsedBatchSize <= assignmentData.length
+      : false;
   });
 
   const availBatchSizesStr = availBatchSizes as string[];
