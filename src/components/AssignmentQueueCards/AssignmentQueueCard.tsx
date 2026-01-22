@@ -28,47 +28,30 @@ import {
 
 const queueCardVariants = {
   submit: () => ({
-    x: 500,
+    x: "110vw",
     transition: {
-      duration: 0.3,
+      duration: 0.2,
+      ease: "linear",
     },
   }),
   center: {
     x: 0,
     y: 0,
     transition: {
-      type: "spring",
-      bounce: 0,
-      duration: 0.3,
+      duration: 0.2,
+      ease: "linear",
     },
   },
   retry: {
-    x: -500,
+    x: "-110vw",
     transition: {
-      type: "spring",
-      bounce: 0.5,
-      duration: 1,
+      duration: 0.2,
+      ease: "linear",
     },
   },
   hideVisibility: {
-    scale: 0.5,
-    opacity: 0,
-    x: 0,
-    transition: {
-      type: "spring",
-      bounce: 0,
-      duration: 0.1,
-    },
-  },
-  fadeForward: {
-    x: 0,
-    scale: 1,
+    x: "-110vw",
     opacity: 1,
-    transition: {
-      type: "spring",
-      bounce: 0.2,
-      duration: 0.5,
-    },
   },
 };
 
@@ -103,7 +86,7 @@ export const AssignmentQueueCard = ({
   const opacityRight = useTransform(dragX, [0, 100], [0, 1]);
   const rotate = useTransform(dragX, [-250, 0, 250], [-20, 0, 20]);
   const [shakeInputTrigger, setShakeInputTrigger] = useState(0);
-  const exitTimeMs = 300;
+  const exitTimeMs = 200;
 
   const cardEnterTimerId = useRef<number | null>(null);
   const cardExitTimerId = useRef<number | null>(null);
@@ -203,11 +186,10 @@ export const AssignmentQueueCard = ({
 
   const hideAndMoveCenter = () => {
     controls.set("hideVisibility");
-    controls.set("center");
   };
 
   const fadeForward = async () => {
-    controls.start("fadeForward");
+    controls.start("center");
   };
 
   const handleDragEnd = (_event: MouseEvent | TouchEvent, info: PanInfo) => {

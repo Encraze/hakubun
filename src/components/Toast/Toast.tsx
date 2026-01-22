@@ -127,6 +127,7 @@ export const Toast = ({
 }: CustomToastProps) => {
   let toastStyles = toastTypeStylesMap[toastType];
   let ToastIcon = toastStyles.icon;
+  const useFadeOnly = toastType === "warning" || toastType === "error";
 
   return (
     <Root
@@ -140,16 +141,36 @@ export const Toast = ({
       data-testid={`${toastType}-toast`}
     >
       <motion.div
-        initial={{ x: "100%" }}
-        animate={{
-          x: "0%",
-          transition: {
-            type: "spring",
-            bounce: 0.5,
-            duration: 1,
-          },
-        }}
-        exit={{ opacity: 0 }}
+        initial={useFadeOnly ? { opacity: 0 } : { x: "100%" }}
+        animate={
+          useFadeOnly
+            ? {
+                opacity: 1,
+                transition: {
+                  duration: 0.15,
+                  ease: "linear",
+                },
+              }
+            : {
+                x: "0%",
+                transition: {
+                  type: "spring",
+                  bounce: 0.5,
+                  duration: 1,
+                },
+              }
+        }
+        exit={
+          useFadeOnly
+            ? {
+                opacity: 0,
+                transition: {
+                  duration: 0.15,
+                  ease: "linear",
+                },
+              }
+            : { opacity: 0 }
+        }
       >
         <>
           <HeaderContainer>
