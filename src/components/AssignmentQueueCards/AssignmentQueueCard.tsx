@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import {
+  animate,
   useMotionValue,
   useTransform,
   AnimatePresence,
-  useAnimation,
   PanInfo,
 } from "framer-motion";
 import { toHiragana } from "wanakana";
@@ -26,33 +26,9 @@ import {
   SwipeIcon,
 } from "./AssignmentQueueCardsStyled";
 
-const queueCardVariants = {
-  submit: () => ({
-    x: "110vw",
-    transition: {
-      duration: 0.2,
-      ease: "linear",
-    },
-  }),
-  center: {
-    x: 0,
-    y: 0,
-    transition: {
-      duration: 0.2,
-      ease: "linear",
-    },
-  },
-  retry: {
-    x: "-110vw",
-    transition: {
-      duration: 0.2,
-      ease: "linear",
-    },
-  },
-  hideVisibility: {
-    x: "-110vw",
-    opacity: 1,
-  },
+const getOffscreenX = (direction: "left" | "right") => {
+  const width = window?.innerWidth ?? 1000;
+  return direction === "left" ? -width * 1.1 : width * 1.1;
 };
 
 type CardProps = {
@@ -80,7 +56,6 @@ export const AssignmentQueueCard = ({
     !isSubmittingAnswer || savedUserAnswer === null ? "" : savedUserAnswer;
   const [userAnswer, setUserAnswer] = useState(initialUserAnswer);
 
-  const controls = useAnimation();
   const dragX = useMotionValue(0);
   const opacityLeft = useTransform(dragX, [-100, 1], [1, 0]);
   const opacityRight = useTransform(dragX, [0, 100], [0, 1]);
@@ -106,10 +81,13 @@ export const AssignmentQueueCard = ({
   useEffect(() => {
     removeTimeouts();
     // slightly delaying so user has time to see screen before card appears
+    dragX.set(getOffscreenX("left"));
     cardEnterTimerId.current = window.setTimeout(() => {
-      hideAndMoveCenter();
-      fadeForward();
-    }, 500);
+      animate(dragX, 0, {
+        duration: 0.2,
+        ease: "linear",
+      });
+    }, 50);
 
     currentReviewItem.readingAudios?.forEach((readingAudio) => {
       readingAudio.audioFile.load();
@@ -127,15 +105,24 @@ export const AssignmentQueueCard = ({
       }, 5000);
       removeTimeouts();
     };
-  }, []);
+  }, [currentReviewItem]);
 
   const retryTriggered = () => {
     const strippedUserAnswer = userAnswer.trim();
 
     if (isSubmittingAnswer) {
-      controls.start("retry");
-      handleRetryCard(currentReviewItem, strippedUserAnswer, setUserAnswer);
-      controls.start("center");
+      animate(dragX, getOffscreenX("left"), {
+        duration: 0.2,
+        ease: "linear",
+      });
+      removeTimeouts();
+      cardExitTimerId.current = window.setTimeout(() => {
+        handleRetryCard(currentReviewItem, strippedUserAnswer, setUserAnswer);
+        animate(dragX, 0, {
+          duration: 0.2,
+          ease: "linear",
+        });
+      }, exitTimeMs);
     } else {
       const cantRetryMsg =
         strippedUserAnswer === ""
@@ -148,7 +135,10 @@ export const AssignmentQueueCard = ({
         content: cantRetryMsg,
         timeout: 10000,
       });
-      controls.start("center");
+      animate(dragX, 0, {
+        duration: 0.2,
+        ease: "linear",
+      });
     }
   };
 
@@ -172,24 +162,17 @@ export const AssignmentQueueCard = ({
       setShakeInputTrigger((shakeInputTrigger) => shakeInputTrigger + 1);
     } else {
       setSavedUserAnswer(strippedUserAnswer);
-      controls.start("submit");
+      animate(dragX, getOffscreenX("right"), {
+        duration: 0.2,
+        ease: "linear",
+      });
 
       removeTimeouts();
       cardExitTimerId.current = window.setTimeout(() => {
-        hideAndMoveCenter();
-        fadeForward();
         handleNextCard(currentReviewItem, strippedUserAnswer, setUserAnswer);
         // TODO: check if answer was correct or not, then show toast
       }, exitTimeMs);
     }
-  };
-
-  const hideAndMoveCenter = () => {
-    controls.set("hideVisibility");
-  };
-
-  const fadeForward = async () => {
-    controls.start("center");
   };
 
   const handleDragEnd = (_event: MouseEvent | TouchEvent, info: PanInfo) => {
@@ -207,7 +190,10 @@ export const AssignmentQueueCard = ({
     ) {
       retryTriggered();
     } else {
-      controls.start("center");
+      animate(dragX, 0, {
+        duration: 0.2,
+        ease: "linear",
+      });
     }
   };
 
@@ -217,9 +203,6 @@ export const AssignmentQueueCard = ({
         <>
           <AssignmentCardStyled
             subjtype={currentReviewItem.object as SubjectType}
-            initial="hideVisibility"
-            animate={controls}
-            variants={queueCardVariants}
             style={{
               x: dragX,
               rotate,
