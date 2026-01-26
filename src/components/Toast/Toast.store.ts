@@ -39,13 +39,15 @@ export const useToastStore = create<ToastStore>((set) => ({
           ...data,
           id,
           timeout:
-            typeof data.timeout === "number"
-              ? data.timeout
-              : data.timeout === null
+            data.timeout === null
+              ? Infinity
+              : data.toastType === "loading"
                 ? Infinity
-                : data.toastType === "loading"
-                  ? Infinity
-                  : 5000,
+                : data.toastType === "error" || data.toastType === "warning"
+                  ? 5000
+                  : typeof data.timeout === "number"
+                    ? data.timeout
+                    : 5000,
           allowClose: data.allowClose ?? data.toastType !== "loading",
         },
         ...state.notifications,

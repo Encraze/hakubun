@@ -66,6 +66,18 @@ export const AssignmentQueueCard = ({
   const cardEnterTimerId = useRef<number | null>(null);
   const cardExitTimerId = useRef<number | null>(null);
   const unloadAudioTimerId = useRef<number | null>(null);
+  const getAnimationDuration = (targetX: number) => {
+    const distance = Math.abs(targetX - dragX.get());
+    const speed = 2500;
+    const duration = distance / speed;
+    return Math.min(0.3, Math.max(0.16, duration));
+  };
+  const animateToX = (targetX: number) => {
+    return animate(dragX, targetX, {
+      duration: getAnimationDuration(targetX),
+      ease: "easeOut",
+    });
+  };
 
   const removeTimeouts = () => {
     if (cardEnterTimerId.current) {
@@ -83,10 +95,7 @@ export const AssignmentQueueCard = ({
     // slightly delaying so user has time to see screen before card appears
     dragX.set(getOffscreenX("left"));
     cardEnterTimerId.current = window.setTimeout(() => {
-      animate(dragX, 0, {
-        duration: 0.2,
-        ease: "linear",
-      });
+      animateToX(0);
     }, 50);
 
     currentReviewItem.readingAudios?.forEach((readingAudio) => {
@@ -111,17 +120,11 @@ export const AssignmentQueueCard = ({
     const strippedUserAnswer = userAnswer.trim();
 
     if (isSubmittingAnswer) {
-      animate(dragX, getOffscreenX("left"), {
-        duration: 0.2,
-        ease: "linear",
-      });
+      animateToX(getOffscreenX("left"));
       removeTimeouts();
       cardExitTimerId.current = window.setTimeout(() => {
         handleRetryCard(currentReviewItem, strippedUserAnswer, setUserAnswer);
-        animate(dragX, 0, {
-          duration: 0.2,
-          ease: "linear",
-        });
+        animateToX(0);
       }, exitTimeMs);
     } else {
       const cantRetryMsg =
@@ -135,10 +138,7 @@ export const AssignmentQueueCard = ({
         content: cantRetryMsg,
         timeout: 10000,
       });
-      animate(dragX, 0, {
-        duration: 0.2,
-        ease: "linear",
-      });
+      animateToX(0);
     }
   };
 
@@ -162,10 +162,7 @@ export const AssignmentQueueCard = ({
       setShakeInputTrigger((shakeInputTrigger) => shakeInputTrigger + 1);
     } else {
       setSavedUserAnswer(strippedUserAnswer);
-      animate(dragX, getOffscreenX("right"), {
-        duration: 0.2,
-        ease: "linear",
-      });
+      animateToX(getOffscreenX("right"));
 
       removeTimeouts();
       cardExitTimerId.current = window.setTimeout(() => {
@@ -190,10 +187,7 @@ export const AssignmentQueueCard = ({
     ) {
       retryTriggered();
     } else {
-      animate(dragX, 0, {
-        duration: 0.2,
-        ease: "linear",
-      });
+      animateToX(0);
     }
   };
 
