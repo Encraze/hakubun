@@ -81,6 +81,21 @@ export const SwipeTxt = styled.p`
   text-transform: uppercase;
 `;
 
+type SkillLevelDotProps = {
+  srsColor: string;
+};
+
+export const SkillLevelDot = styled.div<SkillLevelDotProps>`
+  position: absolute;
+  top: 24px;
+  right: 24px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background-color: ${({ srsColor }) => srsColor};
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.7);
+`;
+
 export const NextCardOverlay = styled(SwipeOverlay)`
   background-color: #0077b3;
 `;

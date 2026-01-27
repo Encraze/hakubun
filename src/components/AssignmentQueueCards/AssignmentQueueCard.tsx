@@ -24,7 +24,13 @@ import {
   SwipeIconAndText,
   SwipeTxt,
   SwipeIcon,
+  SkillLevelDot,
 } from "./AssignmentQueueCardsStyled";
+import {
+  getSrsLevelColor,
+  getSrsStageNameByNum,
+} from "../../services/SubjectAndAssignmentService/SubjectAndAssignmentService";
+import { SrsLevelName } from "../../types/MiscTypes";
 
 const getOffscreenX = (direction: "left" | "right") => {
   const width = window?.innerWidth ?? 1000;
@@ -62,6 +68,10 @@ export const AssignmentQueueCard = ({
   const rotate = useTransform(dragX, [-250, 0, 250], [-20, 0, 20]);
   const [shakeInputTrigger, setShakeInputTrigger] = useState(0);
   const exitTimeMs = 200;
+  const srsStageName = getSrsStageNameByNum(currentReviewItem.srs_stage);
+  const srsColor = srsStageName
+    ? getSrsLevelColor(srsStageName as SrsLevelName)
+    : null;
 
   const cardEnterTimerId = useRef<number | null>(null);
   const cardExitTimerId = useRef<number | null>(null);
@@ -207,6 +217,7 @@ export const AssignmentQueueCard = ({
             whileTap={{ cursor: "grabbing" }}
             dragElastic={0.5}
           >
+            {srsColor && <SkillLevelDot srsColor={srsColor} />}
             <AssignmentCharAndType
               currentReviewItem={currentReviewItem}
               disableTextSelection={true}
