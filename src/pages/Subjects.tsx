@@ -1,12 +1,8 @@
-import { useEffect, useState, useRef } from "react";
-import { motion } from "framer-motion";
-import { useScrollRestoration } from "use-scroll-restoration";
+import { useEffect, useState } from "react";
 import { LEVELS } from "../constants";
-import { mergeRefs } from "../utils";
 import useUserInfoStoreFacade from "../stores/useUserInfoStore/useUserInfoStore.facade";
 import { useTabBarHeight } from "../contexts/TabBarHeightContext";
 import { useStickyState } from "../hooks/useStickyState";
-import { getPageIndex } from "../services/MiscService/MiscService";
 import SubjectsOnLvlTab from "../components/SubjectsOnLvlTab/SubjectsOnLvlTab";
 import LoadingDots from "../components/LoadingDots";
 import Paginator from "../components/Paginator";
@@ -23,7 +19,7 @@ type SubjectsPageContainerProps = {
 
 const SubjectsPageContainer = styled(
   ContentWithTabBar
-)<SubjectsPageContainerProps>`
+) <SubjectsPageContainerProps>`
   overflow-y: auto;
   min-height: 100dvh;
   padding: 0;
@@ -81,7 +77,6 @@ const SubjectsContent = ({ level, setLevel }: SubjectsContentProps) => {
       isSelected={currentPage === levelPg}
     />
   ));
-  const pageIndices = [...Array(LEVELS.length).keys()];
   const setPage = (
     newPage: number,
     newDirection: number = newPage - currentPage
@@ -93,12 +88,25 @@ const SubjectsContent = ({ level, setLevel }: SubjectsContentProps) => {
   return (
     <>
       <SubjectsHeader bgcolor="var(--ion-color-primary-tint)">
-        Level
-        <SubjectTabs
-          tabLabels={pageIndices.map((index) => index)}
-          selectedIndex={currentPage}
-          setSelectedIndex={setPage}
-        />
+        <LevelSelectContainer>
+          <span>Level</span>
+          <SelectWrapper>
+            <StyledSelect
+              value={level}
+              onChange={(e) => {
+                const newLevel = parseInt(e.target.value);
+                setPage(newLevel - 1);
+              }}
+            >
+              {LEVELS.map((levelOption) => (
+                <option key={levelOption} value={levelOption}>
+                  {levelOption}
+                </option>
+              ))}
+            </StyledSelect>
+            <ChevronIcon>▾</ChevronIcon>
+          </SelectWrapper>
+        </LevelSelectContainer>
       </SubjectsHeader>
       <SubjectsPageContainer $tabBarHeight={tabBarHeight}>
         <Paginator
@@ -113,135 +121,46 @@ const SubjectsContent = ({ level, setLevel }: SubjectsContentProps) => {
   );
 };
 
-const TabContainer = styled.div`
+const LevelSelectContainer = styled.div`
   display: flex;
-  background-color: var(--ion-color-primary-tint);
-  position: relative;
-  background-color: var(--ion-color-primary-tint);
-  padding: 0;
-  max-width: 100vw;
-  overflow-x: auto;
-  padding: 8px;
-  isolation: isolate;
-  /* Hide scrollbar for Chrome, Safari and Opera */
-  &::-webkit-scrollbar {
-    display: none;
-  }
-
-  /* Hide scrollbar for IE, Edge and Firefox */
-  -ms-overflow-style: none; /* IE and Edge */
-  scrollbar-width: none; /* Firefox */
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-weight: 600;
+  font-size: 1.5rem;
 `;
 
-const PageTab = styled.button`
-  padding: 8px 12px;
-  outline-style: none;
-  color: black;
-  background-color: var(--ion-color-primary-tint);
-  transition-property: background-color, border-color, color, fill, stroke,
-    opacity, box-shadow, transform;
-  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-  transition-duration: 300ms;
-  cursor: default;
-  font-size: 1rem;
-  font-weight: 600;
-
-  margin: 0 4px;
+const SelectWrapper = styled.div`
   position: relative;
-  border-radius: 9999px;
-  line-height: 1.25rem;
+  display: flex;
+  align-items: center;
+`;
 
-  &:focus-visible {
+const StyledSelect = styled.select`
+  appearance: none;
+  background: var(--ion-color-primary);
+  color: white;
+  border: 2px solid black;
+  border-radius: 8px;
+  padding: 4px 28px 4px 12px;
+  font-size: 1.25rem;
+  font-weight: bold;
+  cursor: pointer;
+  font-family: inherit;
+
+  &:focus {
     outline: 2px solid var(--focus-color);
     outline-offset: 2px;
   }
 `;
 
-const TabSelector = styled(motion.div)`
+const ChevronIcon = styled.span`
   position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  z-index: 10;
-  background-color: var(--ion-color-primary-tint);
-  mix-blend-mode: difference;
+  right: 8px;
+  pointer-events: none;
+  font-size: 1.2rem;
+  color: white;
+  display: flex;
+  align-items: center;
 `;
 
-type SubjectTabsProps = {
-  tabLabels: number[];
-  selectedIndex: number;
-  setSelectedIndex: (page: number) => void;
-};
-
-// TODO: improve tab index selection so selects tab list as a group and then can tab into that
-const SubjectTabs = ({
-  tabLabels,
-  selectedIndex,
-  setSelectedIndex,
-}: SubjectTabsProps) => {
-  const tabListRef = useRef<HTMLDivElement | null>(null);
-  const { ref } = useScrollRestoration("subjectsTabsScroll", {
-    debounceTime: 200,
-    persist: "localStorage",
-  });
-
-  const [tabElements, setTabElements] = useState<HTMLButtonElement[]>([]);
-  useEffect(() => {
-    if (tabElements.length === 0 && tabListRef.current) {
-      const tabList: NodeListOf<HTMLButtonElement> =
-        tabListRef.current.querySelectorAll("[data-subject-tab]");
-      setTabElements(Array.from(tabList));
-    }
-  }, [tabListRef.current]);
-
-  // scrolls to the selected tab (and centers it) when tab list is large enough to have scrollbar
-  useEffect(() => {
-    if (
-      tabListRef.current &&
-      selectedIndex &&
-      tabElements &&
-      tabElements.length > 0
-    ) {
-      const currSelected = tabElements[selectedIndex];
-      if (currSelected) {
-        const scrollToCenterPos =
-          currSelected.offsetLeft +
-          currSelected.offsetWidth / 2 -
-          tabListRef.current.offsetWidth / 2;
-
-        tabListRef.current.scrollTo({
-          left: scrollToCenterPos,
-          behavior: "smooth",
-        });
-      }
-    }
-  }, [selectedIndex, tabListRef.current]);
-
-  return (
-    <TabContainer ref={mergeRefs(tabListRef, ref)}>
-      {tabLabels.map((label) => {
-        return (
-          <PageTab
-            data-subject-tab={`tab-${label}`}
-            key={label}
-            onClick={() =>
-              setSelectedIndex(
-                getPageIndex(selectedIndex, label, tabLabels.length)
-              )
-            }
-          >
-            {selectedIndex === label && (
-              <TabSelector
-                style={{ borderRadius: 9999 }}
-                layoutId="subj-tab-selector"
-                transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
-              />
-            )}
-            {label + 1}
-          </PageTab>
-        );
-      })}
-    </TabContainer>
-  );
-};
