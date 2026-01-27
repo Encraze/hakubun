@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
-import { IonSkeletonText } from "@ionic/react";
-import { useScrollRestoration } from "use-scroll-restoration";
+import { IonSkeletonText, IonRefresher, IonRefresherContent, RefresherEventDetail, IonContent } from "@ionic/react";
+import { useQueryClient } from "@tanstack/react-query";
+import { assignmentKeys } from "../hooks/assignments/assignmentsKeyFactory";
 import useUserInfoStoreFacade from "../stores/useUserInfoStore/useUserInfoStore.facade";
 import { useAuthTokenStore } from "../stores/useAuthTokenStore/useAuthTokenStore";
 import { useUserInfo } from "../hooks/user/useUserInfo";
@@ -16,11 +17,14 @@ import ReviewForecast from "../components/ReviewForecast";
 import LoadingDots from "../components/LoadingDots";
 import HydrationWrapper from "../components/HydrationWrapper";
 import { FixedCenterContainer } from "../styles/BaseStyledComponents";
-import { ContentWithTabBar } from "../styles/BaseStyledComponents";
 import styled from "styled-components";
 
-const HomePageContainer = styled(ContentWithTabBar)`
-  margin: 0 8px;
+const HomePageContainer = styled(IonContent)`
+  --background: var(--background-color);
+  --padding-start: 13px;
+  --padding-end: 13px;
+  --padding-bottom: 85px;
+  --padding-top: 5px;
 `;
 
 const LessonAndReviewButtonsContainer = styled.div`
@@ -31,14 +35,12 @@ const LessonAndReviewButtonsContainer = styled.div`
 `;
 
 const Home = () => {
+  const queryClient = useQueryClient();
   const [homeLoading, setHomeLoading] = useState(false);
   const [level, setLevel] = useState<number | undefined>();
   const { setUserInfo, userInfo } = useUserInfoStoreFacade();
 
-  const { ref } = useScrollRestoration("homePageScroll", {
-    debounceTime: 200,
-    persist: "sessionStorage",
-  });
+
 
   useEffect(() => {
     setHomeLoading(true);
@@ -67,10 +69,20 @@ const Home = () => {
     }
   }, [userInfoLoading]);
 
+  const handleRefresh = async (event: CustomEvent<RefresherEventDetail>) => {
+    await queryClient.invalidateQueries({
+      queryKey: assignmentKeys.allAvailable(),
+    });
+    event.detail.complete();
+  };
+
   return (
     <HydrationWrapper store={useAuthTokenStore as PersistentStore}>
       <HomeHeader></HomeHeader>
-      <HomePageContainer ref={ref}>
+      <HomePageContainer>
+        <IonRefresher slot="fixed" onIonRefresh={handleRefresh}>
+          <IonRefresherContent></IonRefresherContent>
+        </IonRefresher>
         {!homeLoading ? (
           <>
             <LessonAndReviewButtonsContainer>

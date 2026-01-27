@@ -2,7 +2,6 @@ import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import useUserInfoStoreFacade from "../../stores/useUserInfoStore/useUserInfoStore.facade";
 import Button from "../Button";
-import RefreshHomeButton from "../RefreshHomeButton";
 import SvgIcon from "../SvgIcon";
 import SettingsIcon from "../../images/settings.svg?react";
 import { Header } from "../../styles/BaseStyledComponents";
@@ -167,7 +166,7 @@ function HomeHeader() {
           </AppName>
         </UserInfoContainer>
         <RefreshAndSettingsContainer>
-          <RefreshHomeButton />
+
           <SettingsButton
             aria-label="User settings page"
             backgroundColor="transparent"
