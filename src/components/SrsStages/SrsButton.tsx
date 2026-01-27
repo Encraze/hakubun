@@ -12,7 +12,6 @@ import styled from "styled-components";
 
 type ButtonProps = {
   srsStage: SrsLevelName;
-  fullWidth: boolean;
 };
 
 export const SrsStageButton = styled.button<ButtonProps>`
@@ -28,29 +27,30 @@ export const SrsStageButton = styled.button<ButtonProps>`
     outline: 2px solid var(--focus-color);
     outline-offset: 1px;
   }
-  grid-column: ${({ fullWidth }) => fullWidth && "1 / 3"};
   display: grid;
 `;
 
 const NumItemsInStage = styled.p`
-  margin: 8px 0 5px 0;
+  margin: 0;
   font-size: 1rem;
+  text-align: right;
 `;
 
 const StageNameAndNumItemsContainer = styled.div`
   display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
+  flex-wrap: nowrap;
+  justify-content: space-between;
+  align-items: center;
   margin: 0;
   padding: 5px;
 `;
 
 const StageName = styled.p`
-  margin: 8px 0 3px 0;
-  flex-basis: 100%;
+  margin: 0;
   font-size: 1.125rem;
   text-transform: uppercase;
   font-weight: 600;
+  text-align: left;
 `;
 
 const NumInStageContainer = styled(motion.div)`
@@ -128,7 +128,6 @@ type SRSStageButtonProps = {
   ariaLabel: string;
   showStageDetails: boolean;
   setShowDetails: (shouldShow: boolean) => void;
-  fullWidth?: boolean;
 };
 
 function SrsButton({
@@ -137,7 +136,6 @@ function SrsButton({
   ariaLabel,
   showStageDetails,
   setShowDetails,
-  fullWidth = false,
 }: SRSStageButtonProps) {
   const stageGroupedByAssignmentType: AssignmentTypeGroupCount =
     countAssignmentTypesInSrsStage(stageData);
@@ -147,7 +145,6 @@ function SrsButton({
       srsStage={stageName}
       aria-label={ariaLabel}
       onClick={() => setShowDetails(!showStageDetails)}
-      fullWidth={fullWidth}
       style={{
         alignItems: showStageDetails ? "flex-end" : "center",
       }}

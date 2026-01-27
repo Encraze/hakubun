@@ -7,9 +7,8 @@ import SrsButton, { SrsStageButton } from "./SrsButton";
 import styled from "styled-components";
 
 const SrsButtonContainer = styled.div`
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  grid-template-rows: 1fr 1fr 1fr;
+  display: flex;
+  flex-direction: column;
   padding: 5px 0;
   width: 100%;
   gap: 5px;
@@ -94,7 +93,6 @@ function SrsStages() {
             key={stageName}
             srsStage={stageName}
             aria-label={`${stageName} ${labelSuffix}`}
-            fullWidth={stageName === "burned"}
             style={{
               alignItems: "center",
               padding: "5px",
@@ -144,7 +142,6 @@ function SrsStages() {
         ariaLabel="Burned SRS Stage"
         showStageDetails={showStageDetails}
         setShowDetails={setShowStageDetails}
-        fullWidth={true}
       />
     </SrsButtonContainer>
   );

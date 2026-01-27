@@ -135,7 +135,7 @@ function ReviewForecast() {
         <ForecastCard
           margin="12px 0"
           headerBgColor="var(--ion-color-primary)"
-          title="Review Forecast"
+          title="Reviews"
           headerTextColor="black"
           headerRight={<ToggleIcon isExpanded={isExpanded}>▾</ToggleIcon>}
           role="button"
