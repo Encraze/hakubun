@@ -155,10 +155,10 @@ function HomeHeader() {
     <HeaderWrapper bgcolor="var(--foreground-color)">
       <FirstRow>
         <UserInfoContainer>
-          <AppLogo src="/sakura_icon.png" alt="SakuraQult logo" />
+          <AppLogo src="/kitsune_icon.png" alt="KitsuneQult logo" />
           <AppName data-testid="home-heading">
             <FadeLabel $visible={isLabelVisible}>
-              {displayStage === "app" && "桜カルト"}
+              {displayStage === "app" && "狐のカルト"}
               {displayStage === "user" && (userInfo?.username ?? "")}
               {displayStage === "level" &&
                 (level !== undefined ? `Level ${level}` : "")}

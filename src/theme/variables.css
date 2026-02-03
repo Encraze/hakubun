@@ -153,8 +153,8 @@ http://ionicframework.com/docs/theming/ */
   /* main theme colors */
 
   --ion-default-font: "Poppins", sans-serif;
-  --japanese-font-family: "Zen Kaku Gothic New", sans-serif;
-  --japanese-with-english-fallback-font-family: "Zen Kaku Gothic New", "Poppins",
+  --japanese-font-family: "Klee One", cursive;
+  --japanese-with-english-fallback-font-family: "Klee One", "Poppins",
     sans-serif;
 }
 
@@ -355,9 +355,9 @@ http://ionicframework.com/docs/theming/ */
     --ion-card-background: var(--light-greyish-purple);
 
     --ion-default-font: "Poppins", sans-serif;
-    --japanese-font-family: "Zen Kaku Gothic New", sans-serif;
-    --japanese-with-english-fallback-font-family: "Zen Kaku Gothic New",
-      "Poppins", sans-serif;
+    --japanese-font-family: "Klee One", cursive;
+    --japanese-with-english-fallback-font-family: "Klee One", "Poppins",
+      sans-serif;
   }
 }
 

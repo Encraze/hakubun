@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='utf-8' ?>
 <resources>
-    <string name="app_name">SakuraQult</string>
+    <string name="app_name">KitsuneQult</string>
     <string name="title_activity_main">SakuraQult</string>
     <string name="package_name">io.hakubun.app</string>
     <string name="custom_url_scheme">io.hakubun.app</string>

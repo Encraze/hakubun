@@ -29,7 +29,7 @@ test("HomeHeader renders", () => {
 test("App name is rendered to screen", async () => {
   renderComponent();
 
-  expect(await screen.findByText(/^SakuraQult$/)).toBeInTheDocument();
+  expect(await screen.findByText(/^KitsuneQult$/)).toBeInTheDocument();
 });
 
 // TODO: change to wait for userInfo to be defined

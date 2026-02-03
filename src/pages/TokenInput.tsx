@@ -173,7 +173,7 @@ const accordionItems: AccordionItemData[] = [
     content: (
       <div>
         <p>
-          SakuraQult is meant to be used with{" "}
+          KitsuneQult is meant to be used with{" "}
           <a href="https://www.wanikani.com/" target="_blank" rel="noopener">
             Wanikani
           </a>
@@ -295,9 +295,9 @@ const TokenInput = () => {
         <Content $bgimg={bgImg}>
           <HeadingAndLogoContainer>
             <LogoContainer>
-              <AppLogo src="/sakura_icon.png" alt="SakuraQult logo" />
+              <AppLogo src="/kitsune_icon.png" alt="KitsuneQult logo" />
             </LogoContainer>
-            <FallingText text="SakuraQult" delay={0.5} duration={0.25} />
+            <FallingText text="KitsuneQult" delay={0.5} duration={0.25} />
           </HeadingAndLogoContainer>
           <p>
             A <em>(third-party)</em> Japanese Study App for Wanikani
