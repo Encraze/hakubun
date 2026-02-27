@@ -1,4 +1,11 @@
-import { SetStateAction, useEffect, useMemo, useRef, useState } from "react";
+import {
+  SetStateAction,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { motion, useAnimate } from "framer-motion";
 import WanakanaInput from "./WanakanaInput";
 import { AssignmentQueueItem } from "../../types/AssignmentQueueTypes";
@@ -7,10 +14,10 @@ import {
   getAnswersForMeaningReviews,
   getAnswersForReadingReviews,
 } from "../../services/AssignmentQueueService/AssignmentQueueService";
-import Modal from "../Modal";
 import Button from "../Button";
 import SvgIcon from "../SvgIcon";
 import NextArrowIcon from "../../images/next-arrow-color.svg?react";
+import HintQuestionMarkIcon from "../../images/hint-question-mark.svg?react";
 import styled from "styled-components";
 
 const InputRow = styled(motion.div)`
@@ -55,19 +62,40 @@ const SubmitBtn = styled(Button)`
   padding: 0;
 `;
 
-const HintButton = styled(Button)`
-  align-self: center;
-  padding: 8px 14px;
-  font-size: 0.9rem;
+const HintBtn = styled.button`
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  position: absolute;
+  left: 12px;
+  bottom: 16px;
+  z-index: 2;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+
+  &:disabled {
+    opacity: 0.4;
+    cursor: default;
+  }
 `;
 
-const HintButtonRow = styled.div`
-  display: flex;
-  justify-content: center;
+const HintPopup = styled.div`
   position: absolute;
-  left: 50%;
-  bottom: 0;
-  transform: translate(-50%, -50%);
+  bottom: calc(100% + 8px);
+  left: 0;
+  background: var(--darkest-color, #1a1a2e);
+  color: var(--text-color, #fff);
+  border-radius: 10px;
+  padding: 12px 16px;
+  min-width: 180px;
+  max-width: 280px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
+  z-index: 10;
+  pointer-events: none;
 `;
 
 const HintList = styled.ul`
@@ -97,17 +125,6 @@ const HintEmpty = styled.p`
   opacity: 0.8;
 `;
 
-const HintFooter = styled.div`
-  display: flex;
-  justify-content: center;
-  margin-top: 16px;
-`;
-
-const OkButton = styled(Button)`
-  padding: 8px 18px;
-  font-size: 0.95rem;
-`;
-
 type Props = {
   currentReviewItem: AssignmentQueueItem;
   userAnswer: string;
@@ -128,7 +145,7 @@ function AssignmentAnswerInput({
   const inputRef = useRef<HTMLTextAreaElement | null>(null);
   const [inputContainerRef, animate] = useAnimate();
   const isReadingType = reviewType === "reading";
-  const [isHintOpen, setIsHintOpen] = useState(false);
+  const [isHintShowing, setIsHintShowing] = useState(false);
   const inputColor = isSubmittingAnswer
     ? currentReviewItem.is_correct_answer
       ? "var(--ion-color-tertiary)"
@@ -184,8 +201,11 @@ function AssignmentAnswerInput({
   }, []);
 
   useEffect(() => {
-    setIsHintOpen(false);
+    setIsHintShowing(false);
   }, [currentReviewItem.itemID]);
+
+  const showHint = useCallback(() => setIsHintShowing(true), []);
+  const hideHint = useCallback(() => setIsHintShowing(false), []);
 
   useEffect(() => {
     removeTimeout();
@@ -237,48 +257,44 @@ function AssignmentAnswerInput({
           />
           <SubmitBtn
             backgroundColor="transparent"
-            onPress={nextBtnClicked}
+            onPressStart={nextBtnClicked}
             aria-label="Submit answer"
             disabled={isSubmittingAnswer}
           >
             <SvgIcon icon={<NextArrowIcon />} width="3.5em" height="3.5em" />
           </SubmitBtn>
         </AnswerRow>
-        <HintButtonRow>
-          <HintButton
-            className="base-button"
-            onPress={() => setIsHintOpen(true)}
-            disabled={isSubmittingAnswer}
-          >
-            Hint
-          </HintButton>
-        </HintButtonRow>
       </InputRow>
-      <Modal open={isHintOpen} onOpenChange={setIsHintOpen}>
-        <Modal.Content
-          modalID="answer-hint-modal"
-          isOpen={isHintOpen}
-          showCloseIcon={false}
-        >
-          {hintAnswers.length === 0 ? (
-            <HintEmpty>No accepted answers found for this item.</HintEmpty>
-          ) : (
-            <HintList>
-              {hintAnswers.map((answer) => (
-                <HintItem key={`${answer.text}-${answer.meta ?? "answer"}`}>
-                  <span>{answer.text}</span>
-                  {answer.meta && <HintMeta>({answer.meta})</HintMeta>}
-                </HintItem>
-              ))}
-            </HintList>
-          )}
-          <HintFooter>
-            <Modal.Close asChild>
-              <OkButton className="base-button">OK</OkButton>
-            </Modal.Close>
-          </HintFooter>
-        </Modal.Content>
-      </Modal>
+      <HintBtn
+        onPointerDown={showHint}
+        onPointerUp={hideHint}
+        onPointerLeave={hideHint}
+        onPointerCancel={hideHint}
+        disabled={isSubmittingAnswer}
+        aria-label="Show hint"
+      >
+        {isHintShowing && (
+          <HintPopup>
+            {hintAnswers.length === 0 ? (
+              <HintEmpty>No accepted answers found for this item.</HintEmpty>
+            ) : (
+              <HintList>
+                {hintAnswers.map((answer) => (
+                  <HintItem key={`${answer.text}-${answer.meta ?? "answer"}`}>
+                    <span>{answer.text}</span>
+                    {answer.meta && <HintMeta>({answer.meta})</HintMeta>}
+                  </HintItem>
+                ))}
+              </HintList>
+            )}
+          </HintPopup>
+        )}
+        <SvgIcon
+          icon={<HintQuestionMarkIcon />}
+          width="3.5em"
+          height="3.5em"
+        />
+      </HintBtn>
     </>
   );
 }

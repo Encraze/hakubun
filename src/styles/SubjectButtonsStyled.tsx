@@ -9,7 +9,7 @@ type DefaultBtnProps = {
 };
 
 export const DefaultBtn = styled.button<DefaultBtnProps>`
-  border-radius: 12px;
+  border-radius: 6px;
   display: flex;
   justify-content: center;
   align-items: center;
