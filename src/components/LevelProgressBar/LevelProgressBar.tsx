@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from "react";
 import { IonSkeletonText } from "@ionic/react";
-import { getAssignmentStatuses } from "../../services/SubjectAndAssignmentService/SubjectAndAssignmentService";
 import { useKanjiAssignmentsForLvl } from "../../hooks/assignments/useKanjiAssignmentsForLvl";
 import { useKanjiSubjectsForLvl } from "../../hooks/subjects/useKanjiSubjectsForLvl";
 import styled from "styled-components";
@@ -71,14 +70,18 @@ function LevelProgressBar({ level }: Props) {
 
   useEffect(() => {
     if (subjectsData && kanjiAssignmentsLvlData) {
-      const total = subjectsData.length;
+      const maxPointsPerKanji = 5;
+      const totalPoints = subjectsData.length * maxPointsPerKanji;
 
-      const { passed } = getAssignmentStatuses(kanjiAssignmentsLvlData);
-      const numToPass = Math.ceil(total * 0.9);
-      const percentage = Math.round((passed / numToPass) * 100);
+      const gainedPoints = kanjiAssignmentsLvlData.reduce((sum, assignment) => {
+        if (assignment.passed_at !== null) return sum + maxPointsPerKanji;
+        return sum + Math.min(assignment.srs_stage, maxPointsPerKanji);
+      }, 0);
 
-      const updatedTxt = `${passed} of ${numToPass} kanji passed`;
-      setCompletedTxt(updatedTxt);
+      const percentage =
+        totalPoints > 0 ? Math.round((gainedPoints / totalPoints) * 100) : 0;
+
+      setCompletedTxt(`Level ${level} progress`);
 
       if (barRef.current) {
         barRef.current.style.width = `${percentage}%`;
