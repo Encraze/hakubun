@@ -87,12 +87,11 @@ const HintPopup = styled.div`
   position: absolute;
   bottom: calc(100% + 8px);
   left: 0;
+  width: 66vw;
   background: var(--darkest-color, #1a1a2e);
   color: var(--text-color, #fff);
   border-radius: 10px;
   padding: 12px 16px;
-  min-width: 180px;
-  max-width: 280px;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
   z-index: 10;
   pointer-events: none;
@@ -204,7 +203,10 @@ function AssignmentAnswerInput({
     setIsHintShowing(false);
   }, [currentReviewItem.itemID]);
 
-  const showHint = useCallback(() => setIsHintShowing(true), []);
+  const showHint = useCallback((e: React.PointerEvent) => {
+    e.preventDefault();
+    setIsHintShowing(true);
+  }, []);
   const hideHint = useCallback(() => setIsHintShowing(false), []);
 
   useEffect(() => {

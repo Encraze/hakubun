@@ -1,11 +1,13 @@
 import { Fragment, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { AnimatePresence, useMotionValueEvent, useScroll } from "framer-motion";
+import { useQueryClient } from "@tanstack/react-query";
 import { getReviewsGroupedByResult } from "../services/AssignmentQueueService/AssignmentQueueService";
 import { getCompletedAssignmentQueueData } from "../services/AssignmentQueueService/AssignmentQueueService";
 import { useQueueStore } from "../stores/useQueueStore/useQueueStore";
 import { useAssignmentQueueStore } from "../stores/useAssignmentQueueStore/useAssignmentQueueStore";
 import useAssignmentSubmitStoreFacade from "../stores/useAssignmentSubmitStore/useAssignmentSubmitStore.facade";
+import { assignmentKeys } from "../hooks/assignments/assignmentsKeyFactory";
 import ReviewResults from "../components/ReviewResults";
 import ResultsHeader from "../components/ReviewResults/ResultsHeader";
 import Card from "../components/Card";
@@ -103,6 +105,7 @@ function ReviewSummary() {
     ...queueItemsThatHadErrors,
   ];
 
+  const queryClient = useQueryClient();
   const resetQueueStore = useQueueStore((state) => state.resetAll);
   const resetAssignmentQueue = useAssignmentQueueStore(
     (state) => state.resetAll
@@ -111,6 +114,7 @@ function ReviewSummary() {
   useEffect(() => {
     resetQueueStore();
     resetAssignmentQueue();
+    queryClient.invalidateQueries({ queryKey: assignmentKeys.all });
   }, []);
 
   // combine queue items so reading and meaning aren't separate anymore
