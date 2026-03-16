@@ -22,9 +22,10 @@ export const useForecastTotalsStore = create<
 >((set, get) => ({
   ...initialState,
   updateRunningTotalAvailableReviews: (totalAvailableForDay, indexToUpdate) => {
-    let updatedRunningTotal = get().runningTotalAvailableReviews;
+    const currentTotals = get().runningTotalAvailableReviews;
+    const updatedRunningTotal = [...currentTotals];
     updatedRunningTotal[indexToUpdate + 1] =
-      updatedRunningTotal[indexToUpdate] + totalAvailableForDay;
+      (updatedRunningTotal[indexToUpdate] ?? 0) + totalAvailableForDay;
 
     set(() => ({
       runningTotalAvailableReviews: updatedRunningTotal,
