@@ -2,7 +2,6 @@ import { useEffect, useRef, useState } from "react";
 import {
   animate,
   useMotionValue,
-  useTransform,
   AnimatePresence,
   PanInfo,
 } from "framer-motion";
@@ -14,16 +13,8 @@ import { SubjectType } from "../../types/Subject";
 import { AssignmentQueueItem } from "../../types/AssignmentQueueTypes";
 import AssignmentCharAndType from "./AssignmentCharAndType";
 import AssignmentAnswerInput from "./AssignmentAnswerInput";
-import SvgIcon from "../SvgIcon";
-import RetryIcon from "../../images/retry.svg?react";
-import NextIcon from "../../images/next-item.svg?react";
 import {
-  NextCardOverlay,
-  RetryCardOverlay,
   AssignmentCardStyled,
-  SwipeIconAndText,
-  SwipeTxt,
-  SwipeIcon,
   SkillLevelDot,
 } from "./AssignmentQueueCardsStyled";
 import {
@@ -31,11 +22,6 @@ import {
   getSrsStageNameByNum,
 } from "../../services/SubjectAndAssignmentService/SubjectAndAssignmentService";
 import { SrsLevelName } from "../../types/MiscTypes";
-
-const getOffscreenX = (direction: "left" | "right") => {
-  const width = window?.innerWidth ?? 1000;
-  return direction === "left" ? -width * 1.1 : width * 1.1;
-};
 
 type CardProps = {
   currentReviewItem: AssignmentQueueItem;
@@ -61,52 +47,22 @@ export const AssignmentQueueCard = ({
   const initialUserAnswer =
     !isSubmittingAnswer || savedUserAnswer === null ? "" : savedUserAnswer;
   const [userAnswer, setUserAnswer] = useState(initialUserAnswer);
-
-  const dragX = useMotionValue(0);
-  const opacityLeft = useTransform(dragX, [-100, 1], [1, 0]);
-  const opacityRight = useTransform(dragX, [0, 100], [0, 1]);
-  const rotate = useTransform(dragX, [-250, 0, 250], [-20, 0, 20]);
+  const cardFlipY = useMotionValue(0);
   const [shakeInputTrigger, setShakeInputTrigger] = useState(0);
-  const exitTimeMs = 200;
+  const [isTransitioning, setIsTransitioning] = useState(false);
+  const isTransitioningRef = useRef(false);
+  const flipHalfDurationSec = 0.18;
   const srsStageName = getSrsStageNameByNum(currentReviewItem.srs_stage);
   const srsColor = srsStageName
     ? getSrsLevelColor(srsStageName as SrsLevelName)
     : null;
 
-  const cardEnterTimerId = useRef<number | null>(null);
-  const cardExitTimerId = useRef<number | null>(null);
   const unloadAudioTimerId = useRef<number | null>(null);
-  const getAnimationDuration = (targetX: number) => {
-    const distance = Math.abs(targetX - dragX.get());
-    const speed = 2500;
-    const duration = distance / speed;
-    return Math.min(0.3, Math.max(0.16, duration));
-  };
-  const animateToX = (targetX: number) => {
-    return animate(dragX, targetX, {
-      duration: getAnimationDuration(targetX),
-      ease: "easeOut",
-    });
-  };
-
-  const removeTimeouts = () => {
-    if (cardEnterTimerId.current) {
-      clearTimeout(cardEnterTimerId.current);
-      cardEnterTimerId.current = null;
-    }
-    if (cardExitTimerId.current) {
-      clearTimeout(cardExitTimerId.current);
-      cardExitTimerId.current = null;
-    }
-  };
 
   useEffect(() => {
-    removeTimeouts();
-    // slightly delaying so user has time to see screen before card appears
-    dragX.set(getOffscreenX("left"));
-    cardEnterTimerId.current = window.setTimeout(() => {
-      animateToX(0);
-    }, 50);
+    cardFlipY.set(0);
+    setIsTransitioning(false);
+    isTransitioningRef.current = false;
 
     currentReviewItem.readingAudios?.forEach((readingAudio) => {
       readingAudio.audioFile.load();
@@ -122,20 +78,41 @@ export const AssignmentQueueCard = ({
           unloadAudioTimerId.current = null;
         }
       }, 5000);
-      removeTimeouts();
     };
   }, [currentReviewItem]);
+
+  const runFlipTransition = (onHalfFlip: () => void) => {
+    if (isTransitioningRef.current) return;
+    isTransitioningRef.current = true;
+    setIsTransitioning(true);
+    animate(cardFlipY, 90, {
+      duration: flipHalfDurationSec,
+      ease: "easeIn",
+    })
+      .then(() => {
+        onHalfFlip();
+        cardFlipY.set(-90);
+        return animate(cardFlipY, 0, {
+          duration: flipHalfDurationSec,
+          ease: "easeOut",
+        });
+      })
+      .catch(() => {
+        // no-op; unlock is handled in finally-style continuation below
+      })
+      .finally(() => {
+        isTransitioningRef.current = false;
+        setIsTransitioning(false);
+      });
+  };
 
   const retryTriggered = () => {
     const strippedUserAnswer = userAnswer.trim();
 
     if (isSubmittingAnswer) {
-      animateToX(getOffscreenX("left"));
-      removeTimeouts();
-      cardExitTimerId.current = window.setTimeout(() => {
+      runFlipTransition(() => {
         handleRetryCard(currentReviewItem, strippedUserAnswer, setUserAnswer);
-        animateToX(0);
-      }, exitTimeMs);
+      });
     } else {
       const cantRetryMsg =
         strippedUserAnswer === ""
@@ -148,7 +125,17 @@ export const AssignmentQueueCard = ({
         content: cantRetryMsg,
         timeout: 10000,
       });
-      animateToX(0);
+    }
+  };
+
+  const tapToRetryTriggered = () => {
+    const canTapToRetry =
+      isSubmittingAnswer &&
+      currentReviewItem.is_correct_answer === false &&
+      !isTransitioning;
+
+    if (canTapToRetry) {
+      retryTriggered();
     }
   };
 
@@ -172,13 +159,10 @@ export const AssignmentQueueCard = ({
       setShakeInputTrigger((shakeInputTrigger) => shakeInputTrigger + 1);
     } else {
       setSavedUserAnswer(strippedUserAnswer);
-      animateToX(getOffscreenX("right"));
-
-      removeTimeouts();
-      cardExitTimerId.current = window.setTimeout(() => {
+      runFlipTransition(() => {
         handleNextCard(currentReviewItem, strippedUserAnswer, setUserAnswer);
         // TODO: check if answer was correct or not, then show toast
-      }, exitTimeMs);
+      });
     }
   };
 
@@ -191,13 +175,6 @@ export const AssignmentQueueCard = ({
       (info.offset.x > xMinOffset && info.velocity.x > xMinVelocity)
     ) {
       attemptToAdvance();
-    } else if (
-      info.offset.x < -xOffsetTrigger ||
-      (info.offset.x < -xMinOffset && info.velocity.x < -xMinVelocity)
-    ) {
-      retryTriggered();
-    } else {
-      animateToX(0);
     }
   };
 
@@ -208,12 +185,12 @@ export const AssignmentQueueCard = ({
           <AssignmentCardStyled
             subjtype={currentReviewItem.object as SubjectType}
             style={{
-              x: dragX,
-              rotate,
+              rotateY: cardFlipY,
             }}
-            drag="x"
+            drag={isTransitioning ? false : "x"}
             dragConstraints={{ left: 0, right: 0 }}
             onDragEnd={handleDragEnd}
+            onTap={tapToRetryTriggered}
             whileTap={{ cursor: "grabbing" }}
             dragElastic={0.5}
           >
@@ -228,31 +205,8 @@ export const AssignmentQueueCard = ({
               userAnswer={userAnswer}
               setUserAnswer={setUserAnswer}
               nextBtnClicked={attemptToAdvance}
+              isTransitioning={isTransitioning}
             />
-            <RetryCardOverlay
-              style={{
-                opacity: opacityLeft,
-              }}
-            >
-              <SwipeIconAndText>
-                <SwipeIcon>
-                  <SvgIcon icon={<RetryIcon />} width="85px" height="85px" />
-                </SwipeIcon>
-                <SwipeTxt>Retry</SwipeTxt>
-              </SwipeIconAndText>
-            </RetryCardOverlay>
-            <NextCardOverlay
-              style={{
-                opacity: opacityRight,
-              }}
-            >
-              <SwipeIconAndText>
-                <SwipeIcon>
-                  <SvgIcon icon={<NextIcon />} width="85px" height="85px" />
-                </SwipeIcon>
-                <SwipeTxt>Next</SwipeTxt>
-              </SwipeIconAndText>
-            </NextCardOverlay>
           </AssignmentCardStyled>
         </>
       )}

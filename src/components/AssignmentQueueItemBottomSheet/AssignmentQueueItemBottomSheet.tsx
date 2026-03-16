@@ -28,6 +28,7 @@ function AssignmentQueueItemBottomSheet({ currentReviewItem }: Props) {
   const [isBottomSheetVisible, setIsBottomSheetVisible] = useState(false);
 
   const timerId = useRef<number | null>(null);
+  const openRequestId = useRef(0);
 
   const removeTimeout = () => {
     if (timerId.current) {
@@ -46,19 +47,28 @@ function AssignmentQueueItemBottomSheet({ currentReviewItem }: Props) {
 
   // TODO: also reopen to previous breakpoint on return?
   useEffect(() => {
-    if (
-      (location.pathname === "/reviews/session" ||
-        location.pathname === "/lessons/quiz") &&
-      showBottomSheet
-    ) {
-      removeTimeout();
-      // using timeout otherwise it gets all weird with the input state being disabled at same time
+    const requestId = ++openRequestId.current;
+    const isSessionPath =
+      location.pathname === "/reviews/session" ||
+      location.pathname === "/lessons/quiz";
+
+    removeTimeout();
+    if (isSessionPath && showBottomSheet) {
+      // Keep delayed open but guard against stale timers causing flash/reopen.
       timerId.current = window.setTimeout(() => {
-        setIsBottomSheetVisible(true);
+        if (openRequestId.current === requestId) {
+          setIsBottomSheetVisible(true);
+        }
       }, 500);
-    } else {
-      setIsBottomSheetVisible(false);
+      return () => {
+        removeTimeout();
+      };
     }
+
+    setIsBottomSheetVisible(false);
+    return () => {
+      removeTimeout();
+    };
   }, [location.pathname, showBottomSheet]);
 
   return (

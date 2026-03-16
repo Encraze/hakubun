@@ -10,6 +10,7 @@ export const AssignmentCardContainer = styled(motion.div)`
   max-width: 1400px;
   will-change: "transform";
   touch-action: none;
+  perspective: 1200px;
 `;
 
 type ReviewItemProps = {
@@ -27,6 +28,7 @@ export const AssignmentCardStyled = styled(motion.div)<ReviewItemProps>`
   will-change: "transform";
   cursor: grab;
   touch-action: none;
+  transform-style: preserve-3d;
 `;
 
 export const SwipeOverlay = styled(motion.div)`

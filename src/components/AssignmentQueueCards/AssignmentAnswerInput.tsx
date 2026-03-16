@@ -130,6 +130,7 @@ type Props = {
   setUserAnswer: (value: SetStateAction<string>) => void;
   nextBtnClicked: () => void;
   shakeInputTrigger: number;
+  isTransitioning?: boolean;
 };
 
 function AssignmentAnswerInput({
@@ -138,6 +139,7 @@ function AssignmentAnswerInput({
   setUserAnswer,
   nextBtnClicked,
   shakeInputTrigger,
+  isTransitioning = false,
 }: Props) {
   const { isSubmittingAnswer } = useQueueStoreFacade();
   const reviewType = currentReviewItem.review_type;
@@ -254,14 +256,14 @@ function AssignmentAnswerInput({
             }}
             translateToHiragana={isReadingType}
             onChange={(e: any) => setUserAnswer(e.target.value)}
-            disabled={isSubmittingAnswer}
+            disabled={isSubmittingAnswer || isTransitioning}
             placeholder={isReadingType ? "答え" : ""}
           />
           <SubmitBtn
             backgroundColor="transparent"
             onPressStart={nextBtnClicked}
             aria-label="Submit answer"
-            disabled={isSubmittingAnswer}
+            disabled={isSubmittingAnswer || isTransitioning}
           >
             <SvgIcon icon={<NextArrowIcon />} width="3.5em" height="3.5em" />
           </SubmitBtn>
@@ -272,7 +274,7 @@ function AssignmentAnswerInput({
         onPointerUp={hideHint}
         onPointerLeave={hideHint}
         onPointerCancel={hideHint}
-        disabled={isSubmittingAnswer}
+        disabled={isSubmittingAnswer || isTransitioning}
         aria-label="Show hint"
       >
         {isHintShowing && (
