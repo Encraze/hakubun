@@ -3,7 +3,6 @@ import {
   animate,
   useMotionValue,
   AnimatePresence,
-  PanInfo,
 } from "framer-motion";
 import { toHiragana } from "wanakana";
 import useQueueStoreFacade from "../../stores/useQueueStore/useQueueStore.facade";
@@ -166,18 +165,6 @@ export const AssignmentQueueCard = ({
     }
   };
 
-  const handleDragEnd = (_event: MouseEvent | TouchEvent, info: PanInfo) => {
-    const xOffsetTrigger = 135;
-    const xMinOffset = 100;
-    const xMinVelocity = 350;
-    if (
-      info.offset.x > xOffsetTrigger ||
-      (info.offset.x > xMinOffset && info.velocity.x > xMinVelocity)
-    ) {
-      attemptToAdvance();
-    }
-  };
-
   return (
     <AnimatePresence>
       {currentReviewItem && (
@@ -187,12 +174,7 @@ export const AssignmentQueueCard = ({
             style={{
               rotateY: cardFlipY,
             }}
-            drag={isTransitioning ? false : "x"}
-            dragConstraints={{ left: 0, right: 0 }}
-            onDragEnd={handleDragEnd}
             onTap={tapToRetryTriggered}
-            whileTap={{ cursor: "grabbing" }}
-            dragElastic={0.5}
           >
             {srsColor && <SkillLevelDot srsColor={srsColor} />}
             <AssignmentCharAndType

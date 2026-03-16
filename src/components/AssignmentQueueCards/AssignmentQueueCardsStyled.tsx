@@ -9,7 +9,6 @@ export const AssignmentCardContainer = styled(motion.div)`
   display: flex;
   max-width: 1400px;
   will-change: "transform";
-  touch-action: none;
   perspective: 1200px;
 `;
 
@@ -26,8 +25,6 @@ export const AssignmentCardStyled = styled(motion.div)<ReviewItemProps>`
     return getSubjectColor(subjtype);
   }};
   will-change: "transform";
-  cursor: grab;
-  touch-action: none;
   transform-style: preserve-3d;
 `;
 
