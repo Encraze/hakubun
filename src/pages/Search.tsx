@@ -52,7 +52,7 @@ const Form = styled.form`
 `;
 
 const SearchBar = styled.input`
-  color: var(--darkest-purple);
+  color: var(--button-text-color);
   &:focus {
     outline: none;
   }

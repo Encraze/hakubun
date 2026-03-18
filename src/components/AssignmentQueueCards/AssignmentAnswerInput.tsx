@@ -212,6 +212,7 @@ function AssignmentAnswerInput({
   const hideHint = useCallback(() => setIsHintShowing(false), []);
 
   useEffect(() => {
+    if (isSubmittingAnswer) return;
     removeTimeout();
     // applying slight delay because this input is self-conscious and really doesn't like being focused on lol
     timerId.current = window.setTimeout(() => {
@@ -240,7 +241,10 @@ function AssignmentAnswerInput({
 
   return (
     <>
-      <InputRow ref={inputContainerRef}>
+      <InputRow
+        ref={inputContainerRef}
+        style={isSubmittingAnswer ? { pointerEvents: "none" } : undefined}
+      >
         <AnswerRow>
           <AnswerInput
             inputcolor={inputColor}
@@ -276,6 +280,7 @@ function AssignmentAnswerInput({
         onPointerCancel={hideHint}
         disabled={isSubmittingAnswer || isTransitioning}
         aria-label="Show hint"
+        style={isSubmittingAnswer ? { pointerEvents: "none" } : undefined}
       >
         {isHintShowing && (
           <HintPopup>
