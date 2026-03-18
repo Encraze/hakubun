@@ -107,7 +107,6 @@ export const useAssignmentQueue = () => {
     userAnswer: string,
     setUserAnswer: (value: string) => void
   ) => {
-    // only playing if kana vocab or vocab of reading type
     if (
       currReviewItem.object === "kana_vocabulary" ||
       currReviewItem.review_type === "reading"
@@ -127,7 +126,6 @@ export const useAssignmentQueue = () => {
 
     const wasWrongFirstAttempt = updatedReviewItem.is_reviewed;
     if (wasWrongFirstAttempt) {
-      // keeping answer as incorrect and is_reviewed as true
       updatedReviewItem.is_reviewed = true;
 
       updateQueueItem(updatedReviewItem);

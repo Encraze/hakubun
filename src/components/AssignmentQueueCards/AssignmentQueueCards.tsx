@@ -73,7 +73,6 @@ function AssignmentQueueCards({
         <>
           <AssignmentCardContainer>
             <AssignmentQueueCard
-              key={`${currReviewItem.itemID}-${currReviewItem.review_type}`}
               currentReviewItem={currReviewItem}
               handleNextCard={handleNextCard}
               handleRetryCard={handleRetryCard}

@@ -50,7 +50,7 @@ export const AssignmentQueueCard = ({
   const [shakeInputTrigger, setShakeInputTrigger] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(false);
   const isTransitioningRef = useRef(false);
-  const flipHalfDurationSec = 0.18;
+  const flipHalfDurationSec = 0.3;
   const srsStageName = getSrsStageNameByNum(currentReviewItem.srs_stage);
   const srsColor = srsStageName
     ? getSrsLevelColor(srsStageName as SrsLevelName)
@@ -59,9 +59,10 @@ export const AssignmentQueueCard = ({
   const unloadAudioTimerId = useRef<number | null>(null);
 
   useEffect(() => {
-    cardFlipY.set(0);
-    setIsTransitioning(false);
-    isTransitioningRef.current = false;
+    if (!isTransitioningRef.current) {
+      cardFlipY.set(0);
+      setIsTransitioning(false);
+    }
 
     currentReviewItem.readingAudios?.forEach((readingAudio) => {
       readingAudio.audioFile.load();
@@ -160,7 +161,6 @@ export const AssignmentQueueCard = ({
       setSavedUserAnswer(strippedUserAnswer);
       runFlipTransition(() => {
         handleNextCard(currentReviewItem, strippedUserAnswer, setUserAnswer);
-        // TODO: check if answer was correct or not, then show toast
       });
     }
   };
