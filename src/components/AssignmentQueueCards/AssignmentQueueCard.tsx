@@ -174,7 +174,7 @@ export const AssignmentQueueCard = ({
             style={{
               rotateY: cardFlipY,
             }}
-            onTap={tapToRetryTriggered}
+            onClick={tapToRetryTriggered}
           >
             {srsColor && <SkillLevelDot srsColor={srsColor} />}
             <AssignmentCharAndType

@@ -212,8 +212,14 @@ function AssignmentAnswerInput({
   const hideHint = useCallback(() => setIsHintShowing(false), []);
 
   useEffect(() => {
-    if (isSubmittingAnswer) return;
+    if (isSubmittingAnswer && inputRef.current) {
+      inputRef.current.blur();
+    }
+  }, [isSubmittingAnswer]);
+
+  useEffect(() => {
     removeTimeout();
+    if (isSubmittingAnswer) return;
     // applying slight delay because this input is self-conscious and really doesn't like being focused on lol
     timerId.current = window.setTimeout(() => {
       if (inputRef.current) {
