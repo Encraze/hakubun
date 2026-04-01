@@ -87,7 +87,7 @@ function LevelProgressBar({ level }: Props) {
         barRef.current.style.width = `${percentage}%`;
       }
     }
-  }, [subjectsLoading, kanjiAssignmentsLvlLoading]);
+  }, [subjectsData, kanjiAssignmentsLvlData]);
 
   return (
     <>

@@ -147,6 +147,8 @@ function AssignmentAnswerInput({
   const [inputContainerRef, animate] = useAnimate();
   const isReadingType = reviewType === "reading";
   const [isHintShowing, setIsHintShowing] = useState(false);
+  const isShowingWrongResult =
+    isSubmittingAnswer && currentReviewItem.is_correct_answer === false;
   const inputColor = isSubmittingAnswer
     ? currentReviewItem.is_correct_answer
       ? "var(--ion-color-tertiary)"
@@ -212,10 +214,10 @@ function AssignmentAnswerInput({
   const hideHint = useCallback(() => setIsHintShowing(false), []);
 
   useEffect(() => {
-    if (isSubmittingAnswer && inputRef.current) {
+    if (isSubmittingAnswer && !isShowingWrongResult && inputRef.current) {
       inputRef.current.blur();
     }
-  }, [isSubmittingAnswer]);
+  }, [isSubmittingAnswer, isShowingWrongResult]);
 
   useEffect(() => {
     removeTimeout();
@@ -259,14 +261,22 @@ function AssignmentAnswerInput({
             rows={1}
             value={userAnswer}
             onKeyDown={(e: any) => {
+              if (isShowingWrongResult) {
+                e.preventDefault();
+                return;
+              }
               if (e.key === "Enter") {
                 e.preventDefault();
                 nextBtnClicked();
               }
             }}
             translateToHiragana={isReadingType}
-            onChange={(e: any) => setUserAnswer(e.target.value)}
-            disabled={isSubmittingAnswer || isTransitioning}
+            onChange={(e: any) => {
+              if (!isShowingWrongResult) setUserAnswer(e.target.value);
+            }}
+            disabled={
+              (isSubmittingAnswer && !isShowingWrongResult) || isTransitioning
+            }
             placeholder={isReadingType ? "答え" : ""}
           />
           <SubmitBtn

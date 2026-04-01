@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { IonSkeletonText, IonRefresher, IonRefresherContent, RefresherEventDetail, IonContent } from "@ionic/react";
 import { useQueryClient } from "@tanstack/react-query";
 import { assignmentKeys } from "../hooks/assignments/assignmentsKeyFactory";
+import { userKeys } from "../hooks/user/userKeyFactory";
 import useUserInfoStoreFacade from "../stores/useUserInfoStore/useUserInfoStore.facade";
 import { useAuthTokenStore } from "../stores/useAuthTokenStore/useAuthTokenStore";
 import { useUserInfo } from "../hooks/user/useUserInfo";
@@ -67,12 +68,17 @@ const Home = () => {
         setUserInfo(userInfoData.data);
       }
     }
-  }, [userInfoLoading]);
+  }, [userInfoLoading, userInfoData]);
 
   const handleRefresh = async (event: CustomEvent<RefresherEventDetail>) => {
-    await queryClient.invalidateQueries({
-      queryKey: assignmentKeys.allAvailable(),
-    });
+    await Promise.all([
+      queryClient.invalidateQueries({
+        queryKey: assignmentKeys.all,
+      }),
+      queryClient.invalidateQueries({
+        queryKey: userKeys.userInfo(),
+      }),
+    ]);
     event.detail.complete();
   };
 
