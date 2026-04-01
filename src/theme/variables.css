@@ -65,8 +65,8 @@ http://ionicframework.com/docs/theming/ */
   --ofwhite-color-tint: #2f1f36;
   --offwhite-color-shade: #17101b;
   --offwhite-color-lightest: #3a2842;
-  --light-greyish-purple: #32233c;
-  --dark-greyish-purple: #140d1a;
+  --light-greyish-purple: #192421;
+  --dark-greyish-purple: #0D0015;
   --dark-greyish-purple-overlay: rgba(20, 13, 26, 0.9);
   --darkest-purple: #0b0710;
 
@@ -81,17 +81,17 @@ http://ionicframework.com/docs/theming/ */
   --wanikani-blue-rgba: rgba(59, 196, 255, 0.18);
   --wanikani-blue-rgb: 59, 196, 255;
 
-  --wanikani-radical: #1b62a3;
+  --wanikani-radical: #1f4788;
   --wanikani-kanji: #ac1e8d;
-  --wanikani-vocab: #6600ff;
-  --wanikani-kana-vocab: #6600ff;
+  --wanikani-vocab: #5900ff;
+  --wanikani-kana-vocab: #5900ff;
   --wanikani-reading: var(--darkest-purple);
 
-  --wanikani-apprentice: #0c7759;
-  --wanikani-guru: #1b62a3;
-  --wanikani-master: #6600ff;
+  --wanikani-apprentice: #0c4842;
+  --wanikani-guru: #1f4788;
+  --wanikani-master: #4a225d;
   --wanikani-enlightened: #490707;
-  --wanikani-burned: #434343;
+  --wanikani-burned: #1c1c1c;
 
   --wanikani-review: #1b62a3;
   --wanikani-lesson: #6f2bff;
