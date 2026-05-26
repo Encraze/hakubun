@@ -28,6 +28,27 @@ export const AssignmentCardStyled = styled(motion.div)<ReviewItemProps>`
   transform-style: preserve-3d;
 `;
 
+export const SubjectInfoButton = styled.button`
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  z-index: 2;
+
+  &:focus-visible {
+    outline: 2px solid var(--focus-color);
+    outline-offset: 2px;
+  }
+`;
+
 export const SwipeOverlay = styled(motion.div)`
   position: absolute;
   top: 0;

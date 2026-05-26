@@ -39,4 +39,20 @@ describe("useQueueStore", () => {
     act(() => result.current.resetAll());
     expect(result.current.isSubmittingAnswer).toEqual(false);
   });
+
+  test("wrong answers do not automatically open subject info", () => {
+    const { result } = renderHook(() => useQueueStoreFacade());
+
+    act(() => result.current.wrongShowResult());
+
+    expect(result.current.isBottomSheetVisible).toEqual(false);
+  });
+
+  test("subject info opens only when explicitly requested", () => {
+    const { result } = renderHook(() => useQueueStoreFacade());
+
+    act(() => result.current.showSubjectInfo());
+
+    expect(result.current.isBottomSheetVisible).toEqual(true);
+  });
 });

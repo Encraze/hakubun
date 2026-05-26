@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { MouseEvent, useEffect, useRef, useState } from "react";
 import {
   animate,
   useMotionValue,
@@ -12,8 +12,11 @@ import { SubjectType } from "../../types/Subject";
 import { AssignmentQueueItem } from "../../types/AssignmentQueueTypes";
 import AssignmentCharAndType from "./AssignmentCharAndType";
 import AssignmentAnswerInput from "./AssignmentAnswerInput";
+import SvgIcon from "../SvgIcon";
+import InfoIcon from "../../images/info.svg?react";
 import {
   AssignmentCardStyled,
+  SubjectInfoButton,
   SkillLevelDot,
 } from "./AssignmentQueueCardsStyled";
 import {
@@ -41,7 +44,12 @@ export const AssignmentQueueCard = ({
   handleNextCard,
   handleRetryCard,
 }: CardProps) => {
-  const { savedUserAnswer, setSavedUserAnswer, isSubmittingAnswer } =
+  const {
+    savedUserAnswer,
+    setSavedUserAnswer,
+    isSubmittingAnswer,
+    showSubjectInfo,
+  } =
     useQueueStoreFacade();
   const initialUserAnswer =
     !isSubmittingAnswer || savedUserAnswer === null ? "" : savedUserAnswer;
@@ -128,15 +136,20 @@ export const AssignmentQueueCard = ({
     }
   };
 
-  const tapToRetryTriggered = () => {
-    const canTapToRetry =
-      isSubmittingAnswer &&
-      currentReviewItem.is_correct_answer === false &&
-      !isTransitioning;
+  const canShowSubjectInfo =
+    isSubmittingAnswer &&
+    currentReviewItem.is_correct_answer === false;
+  const canTapToRetry = canShowSubjectInfo && !isTransitioning;
 
+  const tapToRetryTriggered = () => {
     if (canTapToRetry) {
       retryTriggered();
     }
+  };
+
+  const subjectInfoClicked = (event: MouseEvent<HTMLButtonElement>) => {
+    event.stopPropagation();
+    showSubjectInfo();
   };
 
   const attemptToAdvance = () => {
@@ -176,6 +189,16 @@ export const AssignmentQueueCard = ({
             }}
             onClick={tapToRetryTriggered}
           >
+            {canShowSubjectInfo && (
+              <SubjectInfoButton
+                type="button"
+                aria-label="Show subject info"
+                onPointerDown={(event) => event.stopPropagation()}
+                onClick={subjectInfoClicked}
+              >
+                <SvgIcon icon={<InfoIcon />} width="3.5em" height="3.5em" />
+              </SubjectInfoButton>
+            )}
             {srsColor && <SkillLevelDot srsColor={srsColor} />}
             <AssignmentCharAndType
               currentReviewItem={currentReviewItem}

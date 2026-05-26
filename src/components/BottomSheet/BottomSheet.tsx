@@ -74,15 +74,22 @@ function BottomSheetRoot({ children, ...props }: RadixDialog.DialogProps) {
 
 type BottomSheetContentCoreProps = RadixDialog.DialogContentProps & {
   title: string;
+  initiallyFullyOpen?: boolean;
 };
 
 // TODO: fix bug where can't tab back once tabbed to open/close button (workaround rn is to open sheet and then tab back)
 function BottomSheetContentCore(
-  { title, children, ...props }: BottomSheetContentCoreProps,
+  {
+    title,
+    children,
+    initiallyFullyOpen = false,
+    ...props
+  }: BottomSheetContentCoreProps,
   forwardedRef: ForwardedRef<HTMLDivElement>
 ) {
   const headerRef = useRef<HTMLDivElement | null>(null);
   const sheetContainerRef = useRef<HTMLDivElement | null>(null);
+  const hasInitializedPosition = useRef(false);
   const bottomSheetHeight = "85dvh";
   const headerHeight = "12dvh";
 
@@ -93,10 +100,6 @@ function BottomSheetContentCore(
     }),
   };
 
-  useEffect(() => {
-    mostlyClose();
-  }, []);
-
   const controls = useAnimation();
   const { isBottomSheetOpen, setIsBottomSheetOpen } = useIsBottomSheetOpen();
   const sheetContentProps = isBottomSheetOpen ? {} : { inert: "true" };
@@ -106,10 +109,10 @@ function BottomSheetContentCore(
     setIsBottomSheetOpen(false);
   }, [controls, setIsBottomSheetOpen]);
 
-  const fullyOpen = () => {
+  const fullyOpen = useCallback(() => {
     controls.start("fullyOpen");
     setIsBottomSheetOpen(true);
-  };
+  }, [controls, setIsBottomSheetOpen]);
 
   const onSheetBtnPress = () => {
     if (isBottomSheetOpen) {
@@ -120,10 +123,16 @@ function BottomSheetContentCore(
   };
 
   useEffect(() => {
+    if (!hasInitializedPosition.current) {
+      hasInitializedPosition.current = true;
+      initiallyFullyOpen ? fullyOpen() : mostlyClose();
+      return;
+    }
+
     if (!isBottomSheetOpen) {
       mostlyClose();
     }
-  }, [controls, isBottomSheetOpen, mostlyClose]);
+  }, [fullyOpen, initiallyFullyOpen, isBottomSheetOpen, mostlyClose]);
 
   const onDragEnd = (
     event: MouseEvent | TouchEvent | PointerEvent,

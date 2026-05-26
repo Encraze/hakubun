@@ -13,6 +13,7 @@ export interface QueueActions {
   setIsSubmittingAnswer: (isSubmittingAnswer: boolean) => void;
   retryReview: () => void;
   showPopoverMsg: (popoverInfo: PopoverInfo) => void;
+  showSubjectInfo: () => void;
   setSavedUserAnswer: (savedUserAnswer: string | null) => void;
   correctShowResult: () => void;
   correctMoveToNext: () => void;
@@ -45,6 +46,10 @@ export const useQueueStore = create<QueueState & QueueActions>((set, get) => ({
     }),
   showPopoverMsg: (state) =>
     set({ popoverInfo: { ...state }, displayPopoverMsg: true }),
+  showSubjectInfo: () =>
+    set({
+      isBottomSheetVisible: true,
+    }),
   setSavedUserAnswer: (savedUserAnswer) => set({ savedUserAnswer }),
   correctShowResult: () => set({ isBottomSheetVisible: true }),
   correctMoveToNext: () =>
@@ -56,7 +61,7 @@ export const useQueueStore = create<QueueState & QueueActions>((set, get) => ({
     }),
   wrongShowResult: () =>
     set({
-      isBottomSheetVisible: true,
+      isBottomSheetVisible: false,
     }),
   submitChoice: () =>
     set({

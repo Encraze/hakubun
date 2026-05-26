@@ -76,7 +76,7 @@ function AssignmentQueueItemBottomSheet({ currentReviewItem }: Props) {
       {isBottomSheetVisible && (
         <>
           <BottomSheetRoot>
-            <BottomSheetContent title="Subject Info">
+            <BottomSheetContent title="Subject Info" initiallyFullyOpen={true}>
               <BottomSheetHeader subject={itemAsSubj} />
               <SectionWithPadding>
                 {currentReviewItem.object == "radical" && (

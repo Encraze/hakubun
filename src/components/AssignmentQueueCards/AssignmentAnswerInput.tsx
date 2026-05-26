@@ -14,7 +14,6 @@ import {
   getAnswersForMeaningReviews,
   getAnswersForReadingReviews,
 } from "../../services/AssignmentQueueService/AssignmentQueueService";
-import Button from "../Button";
 import SvgIcon from "../SvgIcon";
 import NextArrowIcon from "../../images/next-arrow-color.svg?react";
 import HintQuestionMarkIcon from "../../images/hint-question-mark.svg?react";
@@ -55,11 +54,21 @@ const AnswerInput = styled(WanakanaInput)<AnswerInputProps>`
   min-height: 44px;
 `;
 
-const SubmitBtn = styled(Button)`
+const SubmitBtn = styled.span`
   display: inline-flex;
   align-items: center;
   justify-content: center;
   padding: 0;
+  background: transparent;
+  color: var(--button-text-color);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+
+  &[aria-disabled="true"] {
+    opacity: 0.4;
+    cursor: default;
+  }
 `;
 
 const HintBtn = styled.button`
@@ -124,6 +133,8 @@ const HintEmpty = styled.p`
   opacity: 0.8;
 `;
 
+const MIN_SRS_STAGE_WITHOUT_HINTS = 8;
+
 type Props = {
   currentReviewItem: AssignmentQueueItem;
   userAnswer: string;
@@ -146,6 +157,8 @@ function AssignmentAnswerInput({
   const inputRef = useRef<HTMLTextAreaElement | null>(null);
   const [inputContainerRef, animate] = useAnimate();
   const isReadingType = reviewType === "reading";
+  const showHintButton =
+    currentReviewItem.srs_stage < MIN_SRS_STAGE_WITHOUT_HINTS;
   const [isHintShowing, setIsHintShowing] = useState(false);
   const isShowingWrongResult =
     isSubmittingAnswer && currentReviewItem.is_correct_answer === false;
@@ -212,23 +225,26 @@ function AssignmentAnswerInput({
     setIsHintShowing(true);
   }, []);
   const hideHint = useCallback(() => setIsHintShowing(false), []);
-
-  useEffect(() => {
-    if (isSubmittingAnswer && !isShowingWrongResult && inputRef.current) {
-      inputRef.current.blur();
-    }
-  }, [isSubmittingAnswer, isShowingWrongResult]);
+  const submitWithoutMovingFocus = useCallback(
+    (e: React.PointerEvent) => {
+      e.preventDefault();
+      inputRef.current?.focus();
+      if (!isSubmittingAnswer && !isTransitioning) {
+        nextBtnClicked();
+      }
+    },
+    [isSubmittingAnswer, isTransitioning, nextBtnClicked]
+  );
 
   useEffect(() => {
     removeTimeout();
-    if (isSubmittingAnswer) return;
     // applying slight delay because this input is self-conscious and really doesn't like being focused on lol
     timerId.current = window.setTimeout(() => {
-      if (inputRef.current) {
+      if (inputRef.current && document.activeElement !== inputRef.current) {
         inputRef.current.focus();
       }
     }, 100);
-  });
+  }, [currentReviewItem.itemID, isSubmittingAnswer]);
 
   useEffect(() => {
     if (!inputRef.current) return;
@@ -261,7 +277,7 @@ function AssignmentAnswerInput({
             rows={1}
             value={userAnswer}
             onKeyDown={(e: any) => {
-              if (isShowingWrongResult) {
+              if (isShowingWrongResult || isTransitioning) {
                 e.preventDefault();
                 return;
               }
@@ -272,54 +288,56 @@ function AssignmentAnswerInput({
             }}
             translateToHiragana={isReadingType}
             onChange={(e: any) => {
-              if (!isShowingWrongResult) setUserAnswer(e.target.value);
+              if (!isSubmittingAnswer && !isTransitioning) {
+                setUserAnswer(e.target.value);
+              }
             }}
-            disabled={
-              (isSubmittingAnswer && !isShowingWrongResult) || isTransitioning
-            }
             placeholder={isReadingType ? "答え" : ""}
           />
           <SubmitBtn
-            backgroundColor="transparent"
-            onPressStart={nextBtnClicked}
+            role="button"
             aria-label="Submit answer"
-            disabled={isSubmittingAnswer || isTransitioning}
+            aria-disabled={isSubmittingAnswer || isTransitioning}
+            tabIndex={-1}
+            onPointerDown={submitWithoutMovingFocus}
           >
             <SvgIcon icon={<NextArrowIcon />} width="3.5em" height="3.5em" />
           </SubmitBtn>
         </AnswerRow>
       </InputRow>
-      <HintBtn
-        onPointerDown={showHint}
-        onPointerUp={hideHint}
-        onPointerLeave={hideHint}
-        onPointerCancel={hideHint}
-        disabled={isSubmittingAnswer || isTransitioning}
-        aria-label="Show hint"
-        style={isSubmittingAnswer ? { pointerEvents: "none" } : undefined}
-      >
-        {isHintShowing && (
-          <HintPopup>
-            {hintAnswers.length === 0 ? (
-              <HintEmpty>No accepted answers found for this item.</HintEmpty>
-            ) : (
-              <HintList>
-                {hintAnswers.map((answer) => (
-                  <HintItem key={`${answer.text}-${answer.meta ?? "answer"}`}>
-                    <span>{answer.text}</span>
-                    {answer.meta && <HintMeta>({answer.meta})</HintMeta>}
-                  </HintItem>
-                ))}
-              </HintList>
-            )}
-          </HintPopup>
-        )}
-        <SvgIcon
-          icon={<HintQuestionMarkIcon />}
-          width="3.5em"
-          height="3.5em"
-        />
-      </HintBtn>
+      {showHintButton && (
+        <HintBtn
+          onPointerDown={showHint}
+          onPointerUp={hideHint}
+          onPointerLeave={hideHint}
+          onPointerCancel={hideHint}
+          disabled={isSubmittingAnswer || isTransitioning}
+          aria-label="Show hint"
+          style={isSubmittingAnswer ? { pointerEvents: "none" } : undefined}
+        >
+          {isHintShowing && (
+            <HintPopup>
+              {hintAnswers.length === 0 ? (
+                <HintEmpty>No accepted answers found for this item.</HintEmpty>
+              ) : (
+                <HintList>
+                  {hintAnswers.map((answer) => (
+                    <HintItem key={`${answer.text}-${answer.meta ?? "answer"}`}>
+                      <span>{answer.text}</span>
+                      {answer.meta && <HintMeta>({answer.meta})</HintMeta>}
+                    </HintItem>
+                  ))}
+                </HintList>
+              )}
+            </HintPopup>
+          )}
+          <SvgIcon
+            icon={<HintQuestionMarkIcon />}
+            width="3.5em"
+            height="3.5em"
+          />
+        </HintBtn>
+      )}
     </>
   );
 }
