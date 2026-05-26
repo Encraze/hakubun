@@ -116,15 +116,45 @@ type SkillLevelDotProps = {
   srsColor: string;
 };
 
-export const SkillLevelDot = styled.div<SkillLevelDotProps>`
+export const SkillLevelBtn = styled.button`
   position: absolute;
-  top: 24px;
-  right: 24px;
+  top: 16px;
+  right: 16px;
+  padding: 4px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+export const SkillLevelDot = styled.div<SkillLevelDotProps>`
   width: 24px;
   height: 24px;
   border-radius: 50%;
   background-color: ${({ srsColor }) => srsColor};
   box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.7);
+`;
+
+export const SkillLevelPopup = styled.div`
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  background: var(--darkest-color, #1a1a2e);
+  color: var(--text-color, #fff);
+  border-radius: 8px;
+  padding: 6px 12px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  white-space: nowrap;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
+  pointer-events: none;
+  z-index: 10;
+  text-transform: capitalize;
 `;
 
 export const NextCardOverlay = styled(SwipeOverlay)`

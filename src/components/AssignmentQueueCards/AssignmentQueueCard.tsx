@@ -1,4 +1,4 @@
-import { MouseEvent, useEffect, useRef, useState } from "react";
+import React, { MouseEvent, useEffect, useRef, useState } from "react";
 import {
   animate,
   useMotionValue,
@@ -17,7 +17,9 @@ import InfoIcon from "../../images/info-icon.svg?react";
 import {
   AssignmentCardStyled,
   SubjectInfoButton,
+  SkillLevelBtn,
   SkillLevelDot,
+  SkillLevelPopup,
 } from "./AssignmentQueueCardsStyled";
 import {
   getSrsLevelColor,
@@ -157,6 +159,13 @@ export const AssignmentQueueCard = ({
     showSubjectInfo();
   };
 
+  const [isSkillLevelShowing, setIsSkillLevelShowing] = useState(false);
+  const showSkillLevel = (event: React.PointerEvent) => {
+    event.stopPropagation();
+    setIsSkillLevelShowing(true);
+  };
+  const hideSkillLevel = () => setIsSkillLevelShowing(false);
+
   const attemptToAdvance = () => {
     closeAllToasts();
     const strippedUserAnswer = userAnswer.trim();
@@ -204,7 +213,21 @@ export const AssignmentQueueCard = ({
                 <SvgIcon icon={<InfoIcon />} width="3.3em" height="3.3em" />
               </SubjectInfoButton>
             )}
-            {srsColor && <SkillLevelDot srsColor={srsColor} />}
+            {srsColor && (
+              <SkillLevelBtn
+                type="button"
+                aria-label="Show SRS level"
+                onPointerDown={showSkillLevel}
+                onPointerUp={hideSkillLevel}
+                onPointerLeave={hideSkillLevel}
+                onPointerCancel={hideSkillLevel}
+              >
+                {isSkillLevelShowing && srsStageName && (
+                  <SkillLevelPopup>{srsStageName}</SkillLevelPopup>
+                )}
+                <SkillLevelDot srsColor={srsColor} />
+              </SkillLevelBtn>
+            )}
             <AssignmentCharAndType
               currentReviewItem={currentReviewItem}
               disableTextSelection={true}
