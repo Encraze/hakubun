@@ -13,7 +13,7 @@ import { AssignmentQueueItem } from "../../types/AssignmentQueueTypes";
 import AssignmentCharAndType from "./AssignmentCharAndType";
 import AssignmentAnswerInput from "./AssignmentAnswerInput";
 import SvgIcon from "../SvgIcon";
-import InfoIcon from "../../images/info.svg?react";
+import InfoIcon from "../../images/info-icon.svg?react";
 import {
   AssignmentCardStyled,
   SubjectInfoButton,
@@ -38,6 +38,7 @@ type CardProps = {
     setUserAnswer: (userAnswer: string) => void
   ) => void;
 };
+
 
 export const AssignmentQueueCard = ({
   currentReviewItem,
@@ -97,9 +98,13 @@ export const AssignmentQueueCard = ({
       duration: flipHalfDurationSec,
       ease: "easeIn",
     })
-      .then(() => {
-        onHalfFlip();
+      .then(async () => {
+        // Snap to -90 first so the card is edge-on (invisible) before
+        // triggering state updates. Yielding one rAF lets the browser
+        // paint that blank frame, keeping all re-render work off-screen.
         cardFlipY.set(-90);
+        await new Promise<void>((resolve) => requestAnimationFrame(() => resolve()));
+        onHalfFlip();
         return animate(cardFlipY, 0, {
           duration: flipHalfDurationSec,
           ease: "easeOut",
@@ -196,7 +201,7 @@ export const AssignmentQueueCard = ({
                 onPointerDown={(event) => event.stopPropagation()}
                 onClick={subjectInfoClicked}
               >
-                <SvgIcon icon={<InfoIcon />} width="3.5em" height="3.5em" />
+                <SvgIcon icon={<InfoIcon />} width="3.3em" height="3.3em" />
               </SubjectInfoButton>
             )}
             {srsColor && <SkillLevelDot srsColor={srsColor} />}

@@ -8,8 +8,9 @@ export const AssignmentCardContainer = styled(motion.div)`
   margin: 10px;
   display: flex;
   max-width: 1400px;
-  will-change: "transform";
+  will-change: transform;
   perspective: 1200px;
+  transform: translateZ(0);
 `;
 
 type ReviewItemProps = {
@@ -24,14 +25,17 @@ export const AssignmentCardStyled = styled(motion.div)<ReviewItemProps>`
   background-color: ${({ subjtype }) => {
     return getSubjectColor(subjtype);
   }};
-  will-change: "transform";
+  will-change: transform;
   transform-style: preserve-3d;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  transform: translateZ(0);
 `;
 
 export const SubjectInfoButton = styled.button`
   position: absolute;
-  top: 8px;
-  left: 8px;
+  top: 10px;
+  left: 10px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -42,6 +46,13 @@ export const SubjectInfoButton = styled.button`
   -webkit-tap-highlight-color: transparent;
   touch-action: manipulation;
   z-index: 2;
+  opacity: 0.95;
+  transition: transform 120ms ease, opacity 120ms ease;
+
+  &:active {
+    transform: scale(0.95);
+    opacity: 1;
+  }
 
   &:focus-visible {
     outline: 2px solid var(--focus-color);
